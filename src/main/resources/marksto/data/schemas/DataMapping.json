@@ -1,0 +1,104 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://marksto.name/schemas/DataMapping.json",
+  "title": "Data Mapping",
+  "description": "A schema for the 'data-mapping.json' application metadata",
+  "definitions": {
+    "TypeEntry": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "$comment": "Note - Do not test pattern manually, Manifold checks types at compile time"
+        },
+        "dataSource": {
+          "type": "string"
+        },
+        "groups": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "key": {
+                "type": "string"
+              },
+              "skipRows": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "horizontal": {
+                "type": "array",
+                "$comment": "Enlists 'mappingEntryValue' values",
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 1
+              },
+              "keepAsList": {
+                "type": "array",
+                "$comment": "Enlists 'mappingEntryValue' values",
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 1
+              },
+              "splitIntoList": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "$ref": "#splitIntoListConfig"
+                },
+                "minItems": 1
+              }
+            },
+            "required": [ "key" ]
+          }
+        },
+        "mapping": {
+          "type": "object",
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "object",
+                "$ref": "#mappingEntryValue"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "$ref": "#mappingEntryValue"
+                },
+                "minItems": 2
+              }
+            ]
+          }
+        }
+      }
+    },
+    "SplitIntoListConfig": {
+      "$id": "splitIntoListConfig",
+      "type": "object",
+      "properties": {
+        "props": {
+          "type": "array",
+          "$comment": "Enlists 'mappingEntryValue' values",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1
+        },
+        "regex": {
+          "type": "string"
+        }
+      }
+    },
+    "MappingEntryValue": {
+      "$id": "mappingEntryValue",
+      "type": "string",
+      "pattern": "[a-z0-9](_[a-z0-9])*(\\[\\d+\\])?(\\.[a-z0-9](_[a-z0-9])*(\\[\\d+\\])?)*"
+    }
+  },
+  "type": "object",
+  "$comment": "Note - Property names are type entries' names",
+  "additionalProperties": { "$ref": "#/definitions/TypeEntry" }
+}

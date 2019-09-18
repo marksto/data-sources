@@ -1,0 +1,166 @@
+2019-09-18 19:32:50.787 [restartedMain] INFO  m.d.s.i.RemoteDataSourceInitializer - Initializing a Data Source for '19mX...'
+2019-09-18 19:32:50.799 [single-1] INFO  c.t.k.s.impl.ProductsServiceImpl - Successfully parsed '5' products
+2019-09-18 19:32:50.805 [restartedMain] DEBUG m.d.s.i.RemoteDataStructureProvider - Uploading remote Data Structure for '19mX...'
+2019-09-18 19:32:50.825 [restartedMain] INFO  m.d.s.i.RemoteDataSourceInitializer - Initializing a Data Source for '1ZWM...'
+2019-09-18 19:32:50.825 [restartedMain] DEBUG m.d.s.i.RemoteDataStructureProvider - Uploading remote Data Structure for '1ZWM...'
+2019-09-18 19:32:50.826 [remote-calls-3] TRACE m.d.i.s.impl.GoogleSheetsServiceImpl - Remote service call '1' attempt
+2019-09-18 19:32:50.826 [restartedMain] INFO  m.d.s.i.RemoteDataSourceInitializer - Initializing a Data Source for '1c8W...'
+2019-09-18 19:32:50.827 [restartedMain] DEBUG m.d.s.i.RemoteDataStructureProvider - Uploading remote Data Structure for '1c8W...'
+2019-09-18 19:32:50.828 [restartedMain] INFO  m.d.s.i.RemoteDataSourceInitializer - Initializing a Data Source for '1tKU...'
+2019-09-18 19:32:50.828 [restartedMain] DEBUG m.d.s.i.RemoteDataStructureProvider - Uploading remote Data Structure for '1tKU...'
+2019-09-18 19:32:50.829 [restartedMain] INFO  m.d.s.i.RemoteDataSourceInitializer - Initializing a Data Source for '1WyG...'
+2019-09-18 19:32:50.830 [restartedMain] DEBUG m.d.s.i.RemoteDataStructureProvider - Uploading remote Data Structure for '1WyG...'
+2019-09-18 19:32:50.830 [restartedMain] INFO  m.d.s.i.RemoteDataSourceInitializer - Initializing a Data Source for '1ef0...'
+2019-09-18 19:32:50.831 [restartedMain] DEBUG m.d.s.i.RemoteDataStructureProvider - Uploading remote Data Structure for '1ef0...'
+2019-09-18 19:32:50.832 [restartedMain] INFO  m.d.s.i.RemoteDataSourceInitializer - Initializing a Data Source for '1jKP...'
+2019-09-18 19:32:50.832 [restartedMain] DEBUG m.d.s.i.RemoteDataStructureProvider - Uploading remote Data Structure for '1jKP...'
+2019-09-18 19:32:50.833 [restartedMain] INFO  m.d.s.i.RemoteDataSourceInitializer - Initializing a Data Source for '1NpM...'
+2019-09-18 19:32:50.835 [restartedMain] DEBUG m.d.s.i.RemoteDataStructureProvider - Uploading remote Data Structure for '1NpM...'
+2019-09-18 19:32:51.161 [remote-calls-4] TRACE m.d.i.s.impl.GoogleSheetsServiceImpl - Remote service call '2' attempt
+2019-09-18 19:32:51.958 [remote-calls-4] TRACE m.d.i.s.impl.GoogleSheetsServiceImpl - Remote service call '2' time=797ms
+2019-09-18 19:32:51.972 [remote-calls-4] DEBUG m.d.s.i.RemoteDataSourceInitializer - Data Source Metadata requested for '{1ZWM...}'
+2019-09-18 19:32:51.973 [remote-calls-4] DEBUG m.d.s.i.DataSourceMetadataProviderImpl - Retrieving metadata for '{1ZWM...}'
+2019-09-18 19:32:51.978 [remote-calls-3] TRACE m.d.i.s.impl.GoogleSheetsServiceImpl - Remote service call '1' time=1152ms
+2019-09-18 19:32:51.979 [remote-calls-3] DEBUG m.d.s.i.RemoteDataSourceInitializer - Data Source Metadata requested for '{19mX...}'
+2019-09-18 19:32:51.979 [remote-calls-3] DEBUG m.d.s.i.DataSourceMetadataProviderImpl - Retrieving metadata for '{19mX...}'
+2019-09-18 19:32:51.996 [remote-calls-4] DEBUG m.d.i.s.impl.GoogleSheetsServiceImpl - Getting '8' ranges from '1ZWM...'
+2019-09-18 19:32:51.996 [remote-calls-3] DEBUG m.d.i.s.impl.GoogleSheetsServiceImpl - Getting '4' ranges from '19mX...'
+2019-09-18 19:32:52.495 [remote-calls-5] TRACE m.d.i.s.impl.GoogleSheetsServiceImpl - Remote service call '3' attempt
+2019-09-18 19:32:53.830 [remote-calls-6] TRACE m.d.i.s.impl.GoogleSheetsServiceImpl - Remote service call '4' attempt
+2019-09-18 19:32:53.955 [remote-calls-5] TRACE m.d.i.s.impl.GoogleSheetsServiceImpl - Remote service call '3' time=1460ms
+2019-09-18 19:32:53.956 [remote-calls-5] DEBUG m.d.s.i.RemoteDataSourceInitializer - Data Source Metadata requested for '{1c8W...}'
+2019-09-18 19:32:53.956 [remote-calls-5] DEBUG m.d.s.i.DataSourceMetadataProviderImpl - Retrieving metadata for '{1c8W...}'
+2019-09-18 19:32:53.957 [remote-calls-5] DEBUG m.d.i.s.impl.GoogleSheetsServiceImpl - Getting '11' ranges from '1c8W...'
+2019-09-18 19:32:55.161 [remote-calls-7] TRACE m.d.i.s.impl.GoogleSheetsServiceImpl - Remote service call '5' attempt
+2019-09-18 19:32:56.495 [remote-calls-8] TRACE m.d.i.s.impl.GoogleSheetsServiceImpl - Remote service call '6' attempt
+2019-09-18 19:32:56.776 [remote-calls-7] TRACE m.d.i.s.impl.GoogleSheetsServiceImpl - Remote service call '5' time=1615ms
+2019-09-18 19:32:56.778 [remote-calls-7] DEBUG m.d.s.i.RemoteDataSourceInitializer - Data Source Metadata requested for '{1WyG...}'
+2019-09-18 19:32:56.778 [remote-calls-7] DEBUG m.d.s.i.DataSourceMetadataProviderImpl - Retrieving metadata for '{1WyG...}'
+2019-09-18 19:32:56.778 [remote-calls-7] DEBUG m.d.i.s.impl.GoogleSheetsServiceImpl - Getting '10' ranges from '1WyG...'
+2019-09-18 19:32:57.828 [remote-calls-9] TRACE m.d.i.s.impl.GoogleSheetsServiceImpl - Remote service call '7' attempt
+2019-09-18 19:32:58.762 [remote-calls-9] TRACE m.d.i.s.impl.GoogleSheetsServiceImpl - Remote service call '7' time=933ms
+2019-09-18 19:32:58.763 [remote-calls-9] DEBUG m.d.s.i.RemoteDataSourceInitializer - Data Source Metadata requested for '{1jKP...}'
+2019-09-18 19:32:58.763 [remote-calls-9] DEBUG m.d.s.i.DataSourceMetadataProviderImpl - Retrieving metadata for '{1jKP...}'
+2019-09-18 19:32:58.764 [remote-calls-9] DEBUG m.d.i.s.impl.GoogleSheetsServiceImpl - Getting '4' ranges from '1jKP...'
+2019-09-18 19:32:59.162 [remote-calls-10] TRACE m.d.i.s.impl.GoogleSheetsServiceImpl - Remote service call '8' attempt
+2019-09-18 19:33:00.495 [remote-calls-4] TRACE m.d.i.s.impl.GoogleSheetsServiceImpl - Remote service call '9' attempt
+2019-09-18 19:33:01.016 [remote-calls-4] TRACE m.d.i.s.impl.GoogleSheetsServiceImpl - Remote service call '9' time=520ms
+2019-09-18 19:33:01.016 [mapper-0] DEBUG m.data.mapping.ValueRangesMapper - Mapping the ValueRange response for 'dataSources'
+2019-09-18 19:33:01.080 [mapper-0] TRACE m.data.mapping.ValueRangesMapper - Constructing the dynamic schema Java Bean for 'marksto.data.schemas.DataSource'...
+2019-09-18 19:33:01.121 [mapper-0] TRACE m.data.mapping.ValueRangesMapper - Preparing the information necessary for instantiation...
+2019-09-18 19:33:01.124 [mapper-0] TRACE m.data.mapping.ValueRangesMapper - Instantiating a set of type objects using this schema...
+2019-09-18 19:33:01.125 [mapper-0] TRACE m.data.mapping.ValueRangesMapper - Max number of Type entities = '1'
+2019-09-18 19:33:01.133 [mapper-0] TRACE m.data.mapping.ValueRangesMapper - Instantiated objects total number = '1'
+2019-09-18 19:33:01.152 [mapper-0] DEBUG m.d.s.i.RemoteDataSourceInitializer - Finalizing the initialization of '{1ZWM...|tk-products}'
+2019-09-18 19:33:01.152 [mapper-0] TRACE m.d.s.i.RemoteDataSourceInitializer - Post-processing the DataStructure of '{1ZWM...|tk-products}'
+2019-09-18 19:33:01.153 [mapper-0] TRACE m.d.s.i.RemoteDataSourceInitializer - Providing the spreadsheet title for '{1ZWM...|tk-products}'
+2019-09-18 19:33:01.167 [mapper-0] INFO  m.d.s.impl.DataSourcesServiceImpl - Registering new DataSource: name='tk-products'
+2019-09-18 19:33:01.826 [remote-calls-3] TRACE m.d.i.s.impl.GoogleSheetsServiceImpl - Remote service call '10' attempt
+2019-09-18 19:33:02.243 [mapper-1] DEBUG m.data.mapping.ValueRangesMapper - Mapping the ValueRange response for 'dataSources'
+2019-09-18 19:33:02.243 [remote-calls-3] TRACE m.d.i.s.impl.GoogleSheetsServiceImpl - Remote service call '10' time=417ms
+2019-09-18 19:33:02.245 [mapper-1] TRACE m.data.mapping.ValueRangesMapper - Constructing the dynamic schema Java Bean for 'marksto.data.schemas.DataSource'...
+2019-09-18 19:33:02.246 [mapper-1] TRACE m.data.mapping.ValueRangesMapper - Preparing the information necessary for instantiation...
+2019-09-18 19:33:02.247 [mapper-1] TRACE m.data.mapping.ValueRangesMapper - Instantiating a set of type objects using this schema...
+2019-09-18 19:33:02.247 [mapper-1] TRACE m.data.mapping.ValueRangesMapper - Max number of Type entities = '1'
+2019-09-18 19:33:02.250 [mapper-1] TRACE m.data.mapping.ValueRangesMapper - Instantiated objects total number = '1'
+2019-09-18 19:33:02.250 [mapper-1] DEBUG m.d.s.i.RemoteDataSourceInitializer - Finalizing the initialization of '{19mX...|tk-enums}'
+2019-09-18 19:33:02.250 [mapper-1] TRACE m.d.s.i.RemoteDataSourceInitializer - Post-processing the DataStructure of '{19mX...|tk-enums}'
+2019-09-18 19:33:02.251 [mapper-1] TRACE m.d.s.i.RemoteDataSourceInitializer - Providing the spreadsheet title for '{19mX...|tk-enums}'
+2019-09-18 19:33:02.251 [mapper-1] INFO  m.d.s.impl.DataSourcesServiceImpl - Registering new DataSource: name='tk-enums'
+2019-09-18 19:33:02.651 [remote-calls-10] TRACE m.d.i.s.impl.GoogleSheetsServiceImpl - Remote service call '8' time=3489ms
+2019-09-18 19:33:02.652 [remote-calls-10] DEBUG m.d.s.i.RemoteDataSourceInitializer - Data Source Metadata requested for '{1NpM...}'
+2019-09-18 19:33:02.652 [remote-calls-10] DEBUG m.d.s.i.DataSourceMetadataProviderImpl - Retrieving metadata for '{1NpM...}'
+2019-09-18 19:33:02.653 [remote-calls-10] DEBUG m.d.i.s.impl.GoogleSheetsServiceImpl - Getting '2' ranges from '1NpM...'
+2019-09-18 19:33:02.658 [remote-calls-6] TRACE m.d.i.s.impl.GoogleSheetsServiceImpl - Remote service call '4' time=8827ms
+2019-09-18 19:33:02.659 [remote-calls-6] DEBUG m.d.s.i.RemoteDataSourceInitializer - Data Source Metadata requested for '{1tKU...}'
+2019-09-18 19:33:02.659 [remote-calls-6] DEBUG m.d.s.i.DataSourceMetadataProviderImpl - Retrieving metadata for '{1tKU...}'
+2019-09-18 19:33:02.660 [remote-calls-6] DEBUG m.d.i.s.impl.GoogleSheetsServiceImpl - Getting '10' ranges from '1tKU...'
+2019-09-18 19:33:03.162 [remote-calls-5] TRACE m.d.i.s.impl.GoogleSheetsServiceImpl - Remote service call '11' attempt
+2019-09-18 19:33:04.115 [remote-calls-8] TRACE m.d.i.s.impl.GoogleSheetsServiceImpl - Remote service call '6' time=7620ms
+2019-09-18 19:33:04.116 [remote-calls-8] DEBUG m.d.s.i.RemoteDataSourceInitializer - Data Source Metadata requested for '{1ef0...}'
+2019-09-18 19:33:04.116 [remote-calls-8] DEBUG m.d.s.i.DataSourceMetadataProviderImpl - Retrieving metadata for '{1ef0...}'
+2019-09-18 19:33:04.116 [remote-calls-8] DEBUG m.d.i.s.impl.GoogleSheetsServiceImpl - Getting '10' ranges from '1ef0...'
+2019-09-18 19:33:04.495 [remote-calls-7] TRACE m.d.i.s.impl.GoogleSheetsServiceImpl - Remote service call '12' attempt
+2019-09-18 19:33:05.008 [remote-calls-7] TRACE m.d.i.s.impl.GoogleSheetsServiceImpl - Remote service call '12' time=513ms
+2019-09-18 19:33:05.008 [mapper-0] DEBUG m.data.mapping.ValueRangesMapper - Mapping the ValueRange response for 'dataSources'
+2019-09-18 19:33:05.010 [mapper-0] TRACE m.data.mapping.ValueRangesMapper - Constructing the dynamic schema Java Bean for 'marksto.data.schemas.DataSource'...
+2019-09-18 19:33:05.011 [mapper-0] TRACE m.data.mapping.ValueRangesMapper - Preparing the information necessary for instantiation...
+2019-09-18 19:33:05.011 [mapper-0] TRACE m.data.mapping.ValueRangesMapper - Instantiating a set of type objects using this schema...
+2019-09-18 19:33:05.011 [mapper-0] TRACE m.data.mapping.ValueRangesMapper - Max number of Type entities = '1'
+2019-09-18 19:33:05.011 [mapper-0] TRACE m.data.mapping.ValueRangesMapper - Instantiated objects total number = '1'
+2019-09-18 19:33:05.013 [mapper-0] DEBUG m.d.s.i.RemoteDataSourceInitializer - Finalizing the initialization of '{1WyG...|tk-orders}'
+2019-09-18 19:33:05.013 [mapper-0] TRACE m.d.s.i.RemoteDataSourceInitializer - Post-processing the DataStructure of '{1WyG...|tk-orders}'
+2019-09-18 19:33:05.013 [mapper-0] TRACE m.d.s.i.RemoteDataSourceInitializer - Providing the spreadsheet title for '{1WyG...|tk-orders}'
+2019-09-18 19:33:05.014 [mapper-0] INFO  m.d.s.impl.DataSourcesServiceImpl - Registering new DataSource: name='tk-orders'
+2019-09-18 19:33:05.829 [remote-calls-9] TRACE m.d.i.s.impl.GoogleSheetsServiceImpl - Remote service call '13' attempt
+2019-09-18 19:33:07.162 [remote-calls-4] TRACE m.d.i.s.impl.GoogleSheetsServiceImpl - Remote service call '14' attempt
+2019-09-18 19:33:07.670 [mapper-1] DEBUG m.data.mapping.ValueRangesMapper - Mapping the ValueRange response for 'dataSources'
+2019-09-18 19:33:07.670 [remote-calls-4] TRACE m.d.i.s.impl.GoogleSheetsServiceImpl - Remote service call '14' time=508ms
+2019-09-18 19:33:07.672 [mapper-1] TRACE m.data.mapping.ValueRangesMapper - Constructing the dynamic schema Java Bean for 'marksto.data.schemas.DataSource'...
+2019-09-18 19:33:07.673 [mapper-1] TRACE m.data.mapping.ValueRangesMapper - Preparing the information necessary for instantiation...
+2019-09-18 19:33:07.673 [mapper-1] TRACE m.data.mapping.ValueRangesMapper - Instantiating a set of type objects using this schema...
+2019-09-18 19:33:07.673 [mapper-1] TRACE m.data.mapping.ValueRangesMapper - Max number of Type entities = '1'
+2019-09-18 19:33:07.673 [mapper-1] TRACE m.data.mapping.ValueRangesMapper - Instantiated objects total number = '1'
+2019-09-18 19:33:07.674 [mapper-1] DEBUG m.d.s.i.RemoteDataSourceInitializer - Finalizing the initialization of '{1NpM...|tk-tilda}'
+2019-09-18 19:33:07.674 [mapper-1] TRACE m.d.s.i.RemoteDataSourceInitializer - Post-processing the DataStructure of '{1NpM...|tk-tilda}'
+2019-09-18 19:33:07.674 [mapper-1] TRACE m.d.s.i.RemoteDataSourceInitializer - Providing the spreadsheet title for '{1NpM...|tk-tilda}'
+2019-09-18 19:33:07.674 [mapper-1] INFO  m.d.s.impl.DataSourcesServiceImpl - Registering new DataSource: name='tk-tilda'
+2019-09-18 19:33:07.841 [mapper-0] DEBUG m.data.mapping.ValueRangesMapper - Mapping the ValueRange response for 'dataSources'
+2019-09-18 19:33:07.841 [remote-calls-9] TRACE m.d.i.s.impl.GoogleSheetsServiceImpl - Remote service call '13' time=2012ms
+2019-09-18 19:33:07.843 [mapper-0] TRACE m.data.mapping.ValueRangesMapper - Constructing the dynamic schema Java Bean for 'marksto.data.schemas.DataSource'...
+2019-09-18 19:33:07.844 [mapper-0] TRACE m.data.mapping.ValueRangesMapper - Preparing the information necessary for instantiation...
+2019-09-18 19:33:07.844 [mapper-0] TRACE m.data.mapping.ValueRangesMapper - Instantiating a set of type objects using this schema...
+2019-09-18 19:33:07.844 [mapper-0] TRACE m.data.mapping.ValueRangesMapper - Max number of Type entities = '1'
+2019-09-18 19:33:07.845 [mapper-0] TRACE m.data.mapping.ValueRangesMapper - Instantiated objects total number = '1'
+2019-09-18 19:33:07.846 [mapper-0] DEBUG m.d.s.i.RemoteDataSourceInitializer - Finalizing the initialization of '{1jKP...|tk-texts}'
+2019-09-18 19:33:07.846 [mapper-0] TRACE m.d.s.i.RemoteDataSourceInitializer - Post-processing the DataStructure of '{1jKP...|tk-texts}'
+2019-09-18 19:33:07.846 [mapper-0] TRACE m.d.s.i.RemoteDataSourceInitializer - Providing the spreadsheet title for '{1jKP...|tk-texts}'
+2019-09-18 19:33:07.846 [mapper-0] INFO  m.d.s.impl.DataSourcesServiceImpl - Registering new DataSource: name='tk-texts'
+2019-09-18 19:33:08.496 [remote-calls-3] TRACE m.d.i.s.impl.GoogleSheetsServiceImpl - Remote service call '15' attempt
+2019-09-18 19:33:09.826 [remote-calls-10] TRACE m.d.i.s.impl.GoogleSheetsServiceImpl - Remote service call '16' attempt
+2019-09-18 19:33:14.228 [mapper-1] DEBUG m.data.mapping.ValueRangesMapper - Mapping the ValueRange response for 'dataSources'
+2019-09-18 19:33:14.228 [remote-calls-5] TRACE m.d.i.s.impl.GoogleSheetsServiceImpl - Remote service call '11' time=11066ms
+2019-09-18 19:33:14.230 [mapper-1] TRACE m.data.mapping.ValueRangesMapper - Constructing the dynamic schema Java Bean for 'marksto.data.schemas.DataSource'...
+2019-09-18 19:33:14.231 [mapper-1] TRACE m.data.mapping.ValueRangesMapper - Preparing the information necessary for instantiation...
+2019-09-18 19:33:14.231 [mapper-1] TRACE m.data.mapping.ValueRangesMapper - Instantiating a set of type objects using this schema...
+2019-09-18 19:33:14.231 [mapper-1] TRACE m.data.mapping.ValueRangesMapper - Max number of Type entities = '1'
+2019-09-18 19:33:14.231 [mapper-1] TRACE m.data.mapping.ValueRangesMapper - Instantiated objects total number = '1'
+2019-09-18 19:33:14.233 [mapper-1] DEBUG m.d.s.i.RemoteDataSourceInitializer - Finalizing the initialization of '{1c8W...|tk-suppliers}'
+2019-09-18 19:33:14.233 [mapper-1] TRACE m.d.s.i.RemoteDataSourceInitializer - Post-processing the DataStructure of '{1c8W...|tk-suppliers}'
+2019-09-18 19:33:14.233 [mapper-1] TRACE m.d.s.i.RemoteDataSourceInitializer - Providing the spreadsheet title for '{1c8W...|tk-suppliers}'
+2019-09-18 19:33:14.235 [mapper-1] INFO  m.d.s.impl.DataSourcesServiceImpl - Registering new DataSource: name='tk-suppliers'
+2019-09-18 19:33:34.599 [remote-calls-3] DEBUG m.d.i.s.impl.GoogleSheetsServiceImpl - Remote Service call '15' ended up with error: 'Read timed out'
+2019-09-18 19:33:35.266 [parallel-1] DEBUG m.d.i.s.impl.GoogleSheetsServiceImpl - Getting '10' ranges from '1tKU...'
+2019-09-18 19:33:35.267 [remote-calls-6] TRACE m.d.i.s.impl.GoogleSheetsServiceImpl - Remote service call '17' attempt
+2019-09-18 19:33:49.905 [remote-calls-10] DEBUG m.d.i.s.impl.GoogleSheetsServiceImpl - Remote Service call '16' ended up with error: 'Read timed out'
+2019-09-18 19:33:50.604 [parallel-2] DEBUG m.d.i.s.impl.GoogleSheetsServiceImpl - Getting '10' ranges from '1ef0...'
+2019-09-18 19:33:50.605 [remote-calls-8] TRACE m.d.i.s.impl.GoogleSheetsServiceImpl - Remote service call '18' attempt
+2019-09-18 19:34:08.189 [mapper-0] DEBUG m.data.mapping.ValueRangesMapper - Mapping the ValueRange response for 'dataSources'
+2019-09-18 19:34:08.189 [remote-calls-8] TRACE m.d.i.s.impl.GoogleSheetsServiceImpl - Remote service call '18' time=17584ms
+2019-09-18 19:34:08.191 [mapper-0] TRACE m.data.mapping.ValueRangesMapper - Constructing the dynamic schema Java Bean for 'marksto.data.schemas.DataSource'...
+2019-09-18 19:34:08.192 [mapper-0] TRACE m.data.mapping.ValueRangesMapper - Preparing the information necessary for instantiation...
+2019-09-18 19:34:08.192 [mapper-0] TRACE m.data.mapping.ValueRangesMapper - Instantiating a set of type objects using this schema...
+2019-09-18 19:34:08.192 [mapper-0] TRACE m.data.mapping.ValueRangesMapper - Max number of Type entities = '1'
+2019-09-18 19:34:08.192 [mapper-0] TRACE m.data.mapping.ValueRangesMapper - Instantiated objects total number = '1'
+2019-09-18 19:34:08.194 [mapper-0] DEBUG m.d.s.i.RemoteDataSourceInitializer - Finalizing the initialization of '{1ef0...|tk-price-calc}'
+2019-09-18 19:34:08.194 [mapper-0] TRACE m.d.s.i.RemoteDataSourceInitializer - Post-processing the DataStructure of '{1ef0...|tk-price-calc}'
+2019-09-18 19:34:08.194 [mapper-0] TRACE m.d.s.i.RemoteDataSourceInitializer - Providing the spreadsheet title for '{1ef0...|tk-price-calc}'
+2019-09-18 19:34:08.195 [mapper-0] INFO  m.d.s.impl.DataSourcesServiceImpl - Registering new DataSource: name='tk-price-calc'
+2019-09-18 19:34:15.340 [remote-calls-6] DEBUG m.d.i.s.impl.GoogleSheetsServiceImpl - Remote Service call '17' ended up with error: 'Read timed out'
+2019-09-18 19:34:16.604 [parallel-3] DEBUG m.d.i.s.impl.GoogleSheetsServiceImpl - Getting '10' ranges from '1tKU...'
+2019-09-18 19:34:16.605 [remote-calls-7] TRACE m.d.i.s.impl.GoogleSheetsServiceImpl - Remote service call '19' attempt
+2019-09-18 19:34:35.530 [mapper-1] DEBUG m.data.mapping.ValueRangesMapper - Mapping the ValueRange response for 'dataSources'
+2019-09-18 19:34:35.531 [remote-calls-7] TRACE m.d.i.s.impl.GoogleSheetsServiceImpl - Remote service call '19' time=18926ms
+2019-09-18 19:34:35.532 [mapper-1] TRACE m.data.mapping.ValueRangesMapper - Constructing the dynamic schema Java Bean for 'marksto.data.schemas.DataSource'...
+2019-09-18 19:34:35.533 [mapper-1] TRACE m.data.mapping.ValueRangesMapper - Preparing the information necessary for instantiation...
+2019-09-18 19:34:35.533 [mapper-1] TRACE m.data.mapping.ValueRangesMapper - Instantiating a set of type objects using this schema...
+2019-09-18 19:34:35.533 [mapper-1] TRACE m.data.mapping.ValueRangesMapper - Max number of Type entities = '1'
+2019-09-18 19:34:35.533 [mapper-1] TRACE m.data.mapping.ValueRangesMapper - Instantiated objects total number = '1'
+2019-09-18 19:34:35.535 [mapper-1] DEBUG m.d.s.i.RemoteDataSourceInitializer - Finalizing the initialization of '{1tKU...|tk-cost-calc}'
+2019-09-18 19:34:35.535 [mapper-1] TRACE m.d.s.i.RemoteDataSourceInitializer - Post-processing the DataStructure of '{1tKU...|tk-cost-calc}'
+2019-09-18 19:34:35.536 [mapper-1] TRACE m.d.s.i.RemoteDataSourceInitializer - Providing the spreadsheet title for '{1tKU...|tk-cost-calc}'
+2019-09-18 19:34:35.537 [mapper-1] INFO  m.d.s.impl.DataSourcesServiceImpl - Registering new DataSource: name='tk-cost-calc'
+2019-09-18 19:34:35.537 [mapper-1] DEBUG m.d.s.impl.DataSourcesServiceImpl - The Data Sources Graph construction — Starting...
+2019-09-18 19:34:35.586 [mapper-1] DEBUG m.d.s.impl.DataSourcesServiceImpl - The Data Sources Graph construction — Finished!
+2019-09-18 19:34:35.587 [elastic-11] DEBUG m.d.s.impl.DataSourcesServiceImpl - Persisting the Data Sources as JSON file — Starting...
+2019-09-18 19:34:35.616 [elastic-11] DEBUG m.d.s.impl.DataSourcesServiceImpl - Persisting the Data Sources as JSON file — Finished!

@@ -1,0 +1,37 @@
+{
+  "dataSources": {
+    "type": "marksto.data.schemas.DataSource",
+    "groups": [
+      {
+        "key": "spreadsheet",
+        "horizontal": [
+          "dependsOn[0].ranges",
+          "dependsOn[1].ranges",
+          "dependsOn[2].ranges"
+        ],
+        "keepAsList": [
+          "dependsOn[0].ranges",
+          "dependsOn[1].ranges",
+          "dependsOn[2].ranges"
+        ]
+      }
+    ],
+    "mapping": {
+      "spreadsheet_name": "name",
+
+      "spreadsheet_status_api_ready": "spreadsheet.status.api_ready",
+      "spreadsheet_status_data_errors": "spreadsheet.status.data_errors",
+      "spreadsheet_status_data_warnings": "spreadsheet.status.data_warnings",
+
+      "spreadsheet_dependency_1_source": "dependsOn[0].source",
+      "spreadsheet_dependency_1_ranges": "dependsOn[0].ranges",
+      "spreadsheet_dependency_1_historical": "dependsOn[0].historical",
+      "spreadsheet_dependency_2_source": "dependsOn[1].source",
+      "spreadsheet_dependency_2_ranges": "dependsOn[1].ranges",
+      "spreadsheet_dependency_2_historical": "dependsOn[1].historical",
+      "spreadsheet_dependency_3_source": "dependsOn[2].source",
+      "spreadsheet_dependency_3_ranges": "dependsOn[2].ranges",
+      "spreadsheet_dependency_3_historical": "dependsOn[2].historical"
+    }
+  }
+}

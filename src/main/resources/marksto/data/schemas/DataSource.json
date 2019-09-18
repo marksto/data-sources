@@ -1,0 +1,88 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://marksto.name/schemas/DataSource.json",
+  "title": "Data Source",
+  "description": "An application's data source description",
+  "definitions": {
+    "DataSourceDependency": {
+      "$id": "dependency",
+      "type": "object",
+      "properties": {
+        "source": {
+          "type": "string"
+        },
+        "historical": {
+          "type": "boolean"
+        },
+        "ranges": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1
+        }
+      },
+      "required": [
+        "source",
+        "ranges"
+      ]
+    },
+    "DependantDataSource": {
+      "$id": "dependant",
+      "type": "string"
+    }
+  },
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "state": {
+      "type": "string",
+      "enum": [ "empty" ,"init", "ready" ]
+    },
+    "spreadsheet": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "status": {
+          "type": "object",
+          "properties": {
+            "api_ready": {
+              "type": "boolean"
+            },
+            "data_errors": {
+              "type": "boolean"
+            },
+            "data_warnings": {
+              "type": "boolean"
+            }
+          }
+        }
+      }
+    },
+    "dataStructure": {
+      "type": "object",
+      "$ref": "DataStructure.json"
+    },
+    "dependsOn": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "$ref": "#dependency"
+      }
+    },
+    "dependants": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "$ref": "#dependant"
+      }
+    }
+  }
+}
