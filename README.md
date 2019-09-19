@@ -214,7 +214,7 @@ Properties requiring multiple named ranges can be constructed as well with the f
       ...
       
       ...
-      "assemblages_platings_2": [ "platings[1].quantity", "platings[1].unicode", "platings[1].valuation" ],
+      "assemblages_platings_2": [ "platings[1].quantity", "platings[1].code", "platings[1].valuation" ],
       ...
 ```
 
@@ -257,7 +257,7 @@ An arbitrary _Spring WebFlux_ controller method for Data Sources metadata retrie
         if (StringUtils.isEmpty(data.getDataSource())) {
             return dataSourcesService.retrieveDataSources(body.getForceRemote());
         } else {
-            return dataSourcesService.retrieveDataSource(body.getDataSource(), body.getForceRemote()).flux();
+            return dataSourcesService.retrieveDataSource(body.getName(), body.getForceRemote()).flux();
         }
     }
 ```
@@ -313,7 +313,8 @@ sheets.test-sheet-id=<any spreadsheet ID to check the established connection>
 ```
 
 These could also be passed as environment variables, e.g. `SHEETS_CLIENT_SECRET = { ... }`.
-**NB:** If you choose to do so, don't forget to escape the `=` characters with a backslash.
+
+**NB:** If you choose to do so, you might need to escape the `=` characters in JSON values with a backslash.
 
 Advanced properties with their defaults (for fine tuning):
 
@@ -400,7 +401,7 @@ would it be to synchronize all these spreadsheets manually! With Data Sources it
 
 In **Tera kulta** we use Data Sources to compose a _localized price-list_ of more than 3,500 stock items from hundreds
 of thousands of pre-calculated cell values synchronized between spreadsheets, which then get converted into Tilda CSV
-format and split into semi-equal parts, which then can be easily loaded into the web-site product catalog.
+format and split into semi-equal parts, which can then be easily uploaded to the web site's product catalog.
 
 [//]: # (TODO: Add an illustration. Diagram #3. System overview.)
 
@@ -417,10 +418,10 @@ format and split into semi-equal parts, which then can be easily loaded into the
 ## Future Development
 
 - Add new features such as _Dynamic Domain Types_ support for reloading data models in runtime
-- Switch to a fully asynchronous web client, e.g. Spring's `WebClient`
-- Describe mapping rules in more details with examples
+- Make Sheets API use an asynchronous non-blocking web client (Spring's `WebClient`)
+- Describe data mapping rules in more details with examples
 - Create an environment for live demonstration
-- Add more tests ¯\\_(ツ)_/¯
+- Add more tests ¯\\\_(ツ)\_/¯
 
 
 
