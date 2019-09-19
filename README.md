@@ -3,60 +3,78 @@ Google Spreadsheets as reactive remote Data Sources in Java.
 
 
 ## The Why
-Google Sheets is a great repository for small data. Spreadsheets empower business users with the means of 
-[Illustrative Programming](https://martinfowler.com/bliki/IllustrativeProgramming.html), allow not to stall 
-with obscure RDBMS interfaces and even give rise to ["code less" movements](https://codingisforlosers.com/).
 
-The major shortcoming of this approach becomes apparent when your data reaches the boundary of this "small" amount 
-(which is precisely `400,000` cells per sheet for Google Sheets) and then exceeds it.
+Google Sheets is a great repository for small data. Spreadsheets release business users from the burden of interaction 
+with obscure RDBMS systems while providing them with yet more powerful interface for entering and working with tabular 
+data, allowing for [illustrative programming](https://martinfowler.com/bliki/IllustrativeProgramming.html) and even 
+giving rise to ["code less" movements](https://codingisforlosers.com/) among IT laypeople (and it's totally ok).
+
+Nowadays it seems to be ok to pick Google Spreadsheets for prototypes, internal tools or even real-world apps with short
+time-to-market terms. Sheets tend to be more of a database. The major shortcoming of this approach becomes apparent when
+your data reaches the boundary of this "small" amount (which is precisely `400,000` cells per sheet for Google Sheets) 
+and then finally exceeds it (thanks to the combinatorial explosion of the denormalized data representation).
 
 The usual means, e.g. the built-in function `IMPORTRANGE`, do not help to solve this problem — dependent tables do not 
-automatically receive notifications about the need to update their dependencies data. And even if they received such 
+automatically receive notifications about the need for their dependencies data updates. And even if they received such 
 notifications, it is not entirely clear how they would work in case of cascading updates of the dependent tables graph.
 
 Here's where the _Data Sources_ come to the rescue!
 
 With this ready-to-go Java library one may keep their data and business logic in a familiar Google Spreadsheets format 
-while synchronizing dependencies graph automatically via a minimalistic [API](#the-code). Moreover, one might want to 
-export the data or run some Java workloads with it — here's where the built-in JSON Schema-based mapping facilities 
-come in very handy.
+while [synchronizing dependencies graph](#the-how) automatically via the minimalistic [API](#the-code). Moreover, you 
+might want to export the data or run [some Java workloads](#usage-examples) with it — here is where the built-in JSON 
+Schema-based mapping facilities come in very handy.
+
 
 
 ## The How
-The essence of the solution is to divide large spreadsheets into a group of smaller interconnected ones that are equipped 
-with certain kind of metadata (may be totally invisible for an end user, more on this below).
 
-Main concepts used are:
+The essence of the solution is to divide large spreadsheets into a set of smaller interconnected ones that are equipped 
+with certain kind of metadata (may be totally invisible for an end user, more on this below). They can stay denormalized
+but much less frustrating to work with thanks to narrowing the scope for cascade formulas re-calculations.
+
+[//]: # (TODO: Add an illustration. Diagram #1. Spreadsheets separation process.)
+
+Main concepts in use are:
 
 - _Data Source_ — a source of data for the application
 - _data models_ — a set of schemas defining your _business entities_
 - _data mapping_ — a prescription for mapping Data Sources data to business entities
 
+[//]: # (TODO: Add an illustration. Diagram #2. Main concepts.)
+
+
 ### Data Source
+
 _Data Source_ description includes it's name, data structure, dependencies, etc. Each one is backed by the corresponding 
-Google Spreadsheet which form it's data structure with the help of _named value ranges_. One may think of these as of 
-columns of data in the column-oriented NoSQL database.
+Google Spreadsheet which form its data structure with the help of _named value ranges_. One may think of these ranges as 
+of columns in the column-oriented databases.
 
 A _business entity_ is composed of a group of similarly-prefixed named value ranges. The prefix is alphanumeric and ends 
-with `_`, e.g. `goods_`. In this case a group might consist of `goods_ids`, `goods_names`, `goods_descriptions_full`, etc.
-A single Data Source may serve as a data warehouse for multiple business entities, i.e. a single Google Spreadsheet may
+with `_`, e.g. `goods_`. In this case a group may consist of `goods_ids`, `goods_names`, `goods_descriptions_full`, etc.
+A single Data Source may serve as a data repository for multiple business entities, i.e. a single Google Spreadsheet may
 contain more than one group of similarly-prefixed named value ranges.
 
-Data Sources may (and normally _should_) depend on each other's data: a set of shared _named value ranges_.
+Data Sources may (and normally _should_) depend on each other's data, a set of shared named value ranges. The dependency
+may be of two types: regular and historical. The historical data dependency is best captured in the following example:
+imagine you have to predict future costs of _supplies_ by the previously made _orders_ of these _supplies_.
 
 The Data Sources dependency graph may have all possible quirks: detached vertices, loops (when one Data Source depends
 on the other which in turn depends on the historical data from the first one), etc. Cascade update may be started from
 any particular graph node. Partial synchronization of a pair of Data Sources is supported, still not recommended.
 
-Get built automatically, on a first remote request (for pre-initialized set) or upon an addition of a new Data Source.
+This graph can be built automatically, on a first remote request (for pre-initialized set), or upon the registration of 
+a new Data Source.
 
-The metadata that one needs to provide for a particular Data Source looks consists of:
+The metadata that one is required to provide (in a form of named value ranges) for a particular Data Source consists of:
 
 - the `spreadsheet_name`, a unique Data Source identifier
+
 - a set of `3` indicators calculated by _boolean_ spreadsheet formulas:
   * `spreadsheet_status_api_ready` — indicates the absence of running re-calculations
   * `spreadsheet_status_data_errors` — indicates data inconsistency (optional)
   * `spreadsheet_status_data_warnings` — indicates data incompleteness (optional)
+  
 - a set of up to `3` dependency descriptors, e.g. the first one is defined with:
   * `spreadsheet_dependency_1_source` — the dependency identifier
   * `spreadsheet_dependency_1_ranges` — the named ranges of the dependency
@@ -67,8 +85,12 @@ The metadata that one needs to provide for a particular Data Source looks consis
 
 ### Data models
 
-These are simply a set of JSON Schema type definitions of your _business entities_. Here's how a `Design` data model
-might look like:
+These are simply a set of JSON Schema type definitions of your _business entities_. The "code less" JSON Schema approach 
+was chosen as a logical continuation of an idea of using Google Spreadsheets as data repositories with the flexible and 
+dynamic data structure. Ideally, you simply should not need to recompile your client code if you add a new data column 
+to your business entity.
+
+Here's how a `Design` data model might look like:
 
 ```metadata json
 {
@@ -149,7 +171,10 @@ construct. Still, there's a trivial work-around for this — just use a single-v
 
 ### Data mapping
 
-And here's how the corresponding mapping for `Design` entities might look like.
+This JSON file prescribes how to map Data Sources data (i.e. the corresponding Spreadsheet's named value ranges values) 
+into the [data models](#data-models) described above.
+
+Here's how the data mapping for `Design` entities might look like.
 
 ```metadata json
 {
@@ -198,19 +223,25 @@ Please, mind that indexing starts from `0` which is usual for Java.
 [//]: # (TODO: Add other mapping rules with details and examples.)
 
 
+
 ## The Code
 
 > Talk is cheap. Show me the code.
 >
 > &mdash; Linus Torvalds
 
+
 ### API
 
-The main API is consolidated within the core services:
+The main API is consolidated within these _core services_ (see their JavaDoc for detailed description):
 
-- [GoogleSheetsService](src/main/java/marksto/data/service/GoogleSheetsService)
 - [DataSourcesService](src/main/java/marksto/data/service/DataSourcesService)
 - [DataRetrievalService](src/main/java/marksto/data/service/DataRetrievalService)
+- [GoogleSheetsService](src/main/java/marksto/data/service/GoogleSheetsService)
+
+Most of the time the first two are enough for the aforementioned data sources synchronization and mapping functionality.
+But there's always a lower-level `GoogleSheetsService` for abstractions to leak.
+
 
 ### Client code
 
@@ -243,15 +274,19 @@ At the same time, the Data Sources remote data retrieval might look like this:
     }
 ```
 
+
 ### What's inside
 
 Under the hood Data Sources leverage:
 
 - **Google Sheets API client** with OAuth 2.0 credentials of the [service account](https://cloud.google.com/docs/authentication/production)
-- [JSON Schema](https://json-schema.org/) for Data Sources and Mapping definition and validation
-- [Manifold](https://github.com/manifold-systems/manifold) and [Kryo](https://github.com/EsotericSoftware/kryo) for responses 
-deserialization into Java objects
+- [JSON Schema](https://json-schema.org/) for Data Sources and Data Mapping definition (with support for validation)
+- [Manifold](https://github.com/manifold-systems/manifold) as the main data modeling framework with support for dynamic 
+  type reloading
+- [Kryo](https://github.com/EsotericSoftware/kryo) and [BeanUtils](https://commons.apache.org/proper/commons-beanutils/) 
+  for responses deserialization into Java objects via the data mapping rules
 - [Project Reactor](https://projectreactor.io/) as a Reactive Streams API for data flows
+
 
 
 ## Configuration
@@ -340,20 +375,28 @@ app.data.providers.retrieveData1stBackoff=500ms
 Please, find the detailed description of these in [DataProvidersProperties](src/main/java/marksto/data/config/properties/DataProvidersProperties.java).
 
 
+
 ## Usage Examples
 
-The solution was used when creating the Admin application for [Tera kulta](https://terakulta.com) web site. This backend 
+The library was used in developing the solution for the [Tera kulta](https://terakulta.com) web catalogue. This backend 
 service initializes `8` Data Sources upon the application startup (the exemplary startup [logs](./doc/app-startup.log)).
 
-Here's how fast 
+Here's how it looks like in a dedicated Spring WebFlux-based _Admin UI_.
 
-![Read from file](./doc/Tk%20Admin%20-%20Data%20Init.png "Tera kula Admin UI — Data Initialization example")
+![Read from file](./doc/Tk%20Admin%20-%20Data%20Init.png "Tera kulta Admin UI — Data Initialization example")
 
-And here's how actually _slow_ they get fully synchronized! Of course, this is due to the Google Spreadsheets themselves
+And here's how actually _slow_ they get fully synchronized. Of course, this is due to the Google Spreadsheets themselves
 which are well-known for their catastrophic slowdown on fairly large data sets. Just imagine how terrible and error-prone 
 would it be to synchronize all these spreadsheets manually! With Data Sources it's just a single method call!
 
-![Read from file](./doc/Tk%20Admin%20-%20Data%20Sync.png "Tera kula Admin UI — Data Synchronization example")
+![Read from file](./doc/Tk%20Admin%20-%20Data%20Sync.png "Tera kulta Admin UI — Data Synchronization example")
+
+In **Tera kulta** we use Data Sources to compose a _localized price-list_ of more than 3,500 stock items from hundreds
+of thousands of pre-calculated cell values synchronized between spreadsheets, which then get converted into Tilda CSV
+format and split into semi-equal parts, which then can be easily loaded into the web-site product catalog.
+
+[//]: # (TODO: Add an illustration. Diagram #3. System overview.)
+
 
 
 ## Caveats
@@ -363,12 +406,17 @@ would it be to synchronize all these spreadsheets manually! With Data Sources it
 [//]: # (TODO: Add possible caveats, e.g. when named ranges size is not enough for synchronization.)
 
 
+
 ## Future Development
+
+- Add new features such as _Dynamic Domain Types_ support for reloading data models in runtime
 - Switch to a fully asynchronous web client, e.g. Spring's `WebClient`
 - Describe mapping rules in more details with examples
 - Create an environment for live demonstration
-- Add more tests ¯\_(ツ)_/¯
+- Add more tests ¯\\_(ツ)_/¯
+
+
 
 ## License
 
-Copyright (c) 2019 Mark Sto. See the [LICENSE](./LICENSE) file for license rights and limitations.
+Copyright © 2019 Mark Sto. See the [LICENSE](./LICENSE) file for license rights and limitations.
