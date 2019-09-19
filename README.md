@@ -235,12 +235,16 @@ Please, mind that indexing starts from `0` which is usual for Java.
 
 The main API is consolidated within these _core services_ (see their JavaDoc for detailed description):
 
-- [DataSourcesService](src/main/java/marksto/data/service/DataSourcesService)
-- [DataRetrievalService](src/main/java/marksto/data/service/DataRetrievalService)
-- [GoogleSheetsService](src/main/java/marksto/data/service/GoogleSheetsService)
+- [DataSourcesService](src/main/java/marksto/data/service/DataSourcesService.java)
+- [DataRetrievalService](src/main/java/marksto/data/service/DataRetrievalService.java)
+- [GoogleSheetsService](src/main/java/marksto/data/service/GoogleSheetsService.java)
 
 Most of the time the first two are enough for the aforementioned data sources synchronization and mapping functionality.
 But there's always a lower-level `GoogleSheetsService` for abstractions to leak.
+
+There is also the thinnest domain model represented by the [DomainType](marksto.data.model.DomainType.java) interface 
+and its implementations. With these you wrap your actual domain models to pass them between your client code and the 
+core library services.
 
 
 ### Client code
@@ -258,7 +262,7 @@ An arbitrary _Spring WebFlux_ controller method for Data Sources metadata retrie
     }
 ```
 
-At the same time, the Data Sources remote data retrieval might look like this:
+At the same time, retrieving remote data from registered Data Sources may look like this:
 
 ```java
     private static final DomainType<Design> DESIGNS = new StaticType<>("designs", Design.class);
@@ -274,6 +278,9 @@ At the same time, the Data Sources remote data retrieval might look like this:
     }
 ```
 
+Note the `StaticType` being used to wrap `designs`, `assemblages` and `positions` which are the names of the _business 
+entities_ which are used, among other things, as keys in [data mapping](#data-mapping) ruleset.
+
 
 ### What's inside
 
@@ -284,7 +291,7 @@ Under the hood Data Sources leverage:
 - [Manifold](https://github.com/manifold-systems/manifold) as the main data modeling framework with support for dynamic 
   type reloading
 - [Kryo](https://github.com/EsotericSoftware/kryo) and [BeanUtils](https://commons.apache.org/proper/commons-beanutils/) 
-  for responses deserialization into Java objects via the data mapping rules
+  for responses deserialization via the data mapping rules
 - [Project Reactor](https://projectreactor.io/) as a Reactive Streams API for data flows
 
 
