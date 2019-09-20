@@ -1,6 +1,16 @@
 # Data Sources
 Google Spreadsheets as reactive remote Data Sources in Java.
 
+> **TL;DR**
+> 
+> This library mainly addresses the two missing parts of the Google Sheets API:
+> 1. consistent _data synchronization_ between multiple dependent spreadsheets
+> 2. retrieving data as _business entities_ instead of raw cell data
+> 
+> As a byproduct, the first reactive wrapper around the existing Java API 
+> began to emerge.
+
+
 
 ## The Why
 
@@ -18,12 +28,15 @@ The usual means, e.g. the built-in function `IMPORTRANGE`, do not help to solve 
 automatically receive notifications about the need for their dependencies data updates. And even if they received such 
 notifications, it is not entirely clear how they would work in case of cascading updates of the dependent tables graph.
 
-Here's where the _Data Sources_ come to the rescue!
+Here's where the _Data Sources_ come to the rescue! With this ready-to-go Java library one may keep their tabular data 
+and business logic in a familiar Google Spreadsheets format (with built-in formulas and/or custom AppScript functions) 
+while [synchronizing dependencies graph](#the-how) automatically via the minimalistic [API](#the-code).
 
-With this ready-to-go Java library one may keep their data and business logic in a familiar Google Spreadsheets format 
-while [synchronizing dependencies graph](#the-how) automatically via the minimalistic [API](#the-code). Moreover, you 
-might want to export the data or run [some Java workloads](#usage-examples) with it — here is where the built-in JSON 
-Schema-based mapping facilities come in very handy.
+Moreover, you might want to export the data or run [some Java workloads](#usage-examples) with it — here is where the 
+built-in JSON Schema-based data mapping facilities come in very handy. The ability to receive from your spreadsheets 
+not the raw data (meaningless `List<List<...>>` in Java), but full-fledged _business entities_ (with clear semantics 
+and defined structure) takes work with Google Sheets API to a new level of convenience, starting to resemble the ORM 
+for a traditional database.
 
 
 
@@ -86,7 +99,7 @@ The metadata that one is required to provide (in a form of named value ranges) f
 ### Data models
 
 These are simply a set of JSON Schema type definitions of your _business entities_. The "code less" JSON Schema approach 
-was chosen as a logical continuation of an idea of using Google Spreadsheets as data repositories with the flexible and 
+was chosen as a logical continuation of the idea of using Google Spreadsheets as data repositories with the flexible and 
 dynamic data structure. Ideally, you simply should not need to recompile your client code if you add a new data column 
 to your business entity.
 
