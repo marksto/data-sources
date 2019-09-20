@@ -1,6 +1,7 @@
 package marksto.data.config.properties;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.boot.convert.DurationUnit;
 import org.springframework.security.core.CredentialsContainer;
 
@@ -62,6 +63,7 @@ public class SheetsProperties {
     /**
      * OAuth 2.0 client description.
      */
+    @NestedConfigurationProperty
     private Client client;
 
     /**

@@ -34,7 +34,7 @@ public class DataMappingProviderImpl implements DataMappingProvider {
     // -------------------------------------------------------------------------
 
     private static final String DEFAULT_DATA_MAPPING_PATH = "default-data-mapping.json";
-    private static final String DATA_SOURCE_KEY = "dataSource";
+    private static final String DATA_SOURCES_MAPPING_KEY = "dataSources";
 
     private static final Object SINGLE_DATA_MAPPING = new Object();
 
@@ -56,7 +56,7 @@ public class DataMappingProviderImpl implements DataMappingProvider {
 
         DataMapping dataMapping = loadDataMappingFile(dataMappingPath);
         DataMapping dataSourceMapping = loadDataMappingFile(DEFAULT_DATA_MAPPING_PATH);
-        dataMapping.put(DATA_SOURCE_KEY, dataSourceMapping.get(DATA_SOURCE_KEY));
+        dataMapping.put(DATA_SOURCES_MAPPING_KEY, dataSourceMapping.get(DATA_SOURCES_MAPPING_KEY));
 
         return dataMapping;
     }

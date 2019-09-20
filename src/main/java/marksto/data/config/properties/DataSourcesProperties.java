@@ -5,6 +5,7 @@ import org.springframework.boot.convert.DurationUnit;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -18,7 +19,7 @@ public class DataSourcesProperties {
      * A set of <em>Google Spreadsheets</em> IDs for Data Sources
      * that need to be instantiated on the application startup.
      */
-    private List<String> sheetsIds;
+    private List<String> sheetsIds = Collections.emptyList();
 
     /**
      * An automatic Data Source re-initialization attempt timeout.<br/>
