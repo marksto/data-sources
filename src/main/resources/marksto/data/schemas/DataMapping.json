@@ -1,5 +1,5 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$schema": "http://json-schema.org/draft-04/schema#",
   "$id": "http://marksto.name/schemas/DataMapping.json",
   "title": "Data Mapping",
   "description": "A schema for the 'data-mapping.json' application metadata",

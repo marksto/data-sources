@@ -1,9 +1,9 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$schema": "http://json-schema.org/draft-04/schema#",
   "$id": "http://marksto.name/schemas/DataSources.json",
   "title": "Data Sources",
   "description": "A schema for the 'data-sources.json' application metadata",
   "type": "object",
-  "$comment": "Note - Property names are data sources' keys",
-  "additionalProperties": { "$ref": "DataSource.json"}
+  "$comment": "Note - Property names are data sources' name",
+  "additionalProperties": { "$ref": "DataSource.json" }
 }
