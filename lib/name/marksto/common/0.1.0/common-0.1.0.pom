@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>name.marksto</groupId>
+    <artifactId>common</artifactId>
+    <version>0.1.0</version>
+    <packaging>jar</packaging>
+
+    <name>Common shared functionality</name>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+        <java.version>12</java.version>
+        <java.test.version>${java.version}</java.test.version>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+        <maven.compiler.testSource>${java.test.version}</maven.compiler.testSource>
+        <maven.compiler.testTarget>${java.test.version}</maven.compiler.testTarget>
+
+        <!-- JS interop-specific config -->
+        <graalvm.version>19.0.0</graalvm.version>
+        <compiler.dir>${project.build.directory}/compiler</compiler.dir>
+
+        <!-- versions of Maven plugins -->
+        <version.build-helper-maven-plugin>3.0.0</version.build-helper-maven-plugin>
+        <version.maven-dependency-plugin>3.1.1</version.maven-dependency-plugin>
+        <version.surefire-failsafe-plugin>2.22.2</version.surefire-failsafe-plugin>
+
+        <!-- versions of used frameworks -->
+        <version.springframework>5.1.9.RELEASE</version.springframework>
+        <version.spring-boot>2.1.8.RELEASE</version.spring-boot>
+
+        <!-- versions of used libraries -->
+        <version.commons-beanutils>1.9.4</version.commons-beanutils>
+        <version.commons-io>2.6</version.commons-io>
+        <version.guava>28.1-jre</version.guava>
+        <version.jackson>2.9.9</version.jackson>
+        <version.reactor>3.2.12.RELEASE</version.reactor>
+        <version.slugify>2.4</version.slugify>
+        <version.vavr>1.0.0-alpha-3</version.vavr>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${version.spring-boot}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <!-- JSON -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${version.jackson}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <version>${version.jackson}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-csv</artifactId>
+            <version>${version.jackson}</version>
+        </dependency>
+
+        <!-- Spring Framework -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+            <scope>provided</scope>
+        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.boot</groupId>-->
+<!--            <artifactId>spring-boot-starter-logging</artifactId>-->
+<!--            <scope>provided</scope>-->
+<!--        </dependency>-->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-tx</artifactId>
+            <version>${version.springframework}</version>
+        </dependency>
+
+        <!-- Common Libs -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+            <version>${version.commons-beanutils}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>${version.commons-io}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${version.guava}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.projectreactor</groupId>
+            <artifactId>reactor-core</artifactId>
+            <version>${version.reactor}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.slugify</groupId>
+            <artifactId>slugify</artifactId>
+            <version>${version.slugify}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.vavr</groupId>
+            <artifactId>vavr</artifactId>
+            <version>${version.vavr}</version>
+        </dependency>
+
+        <!-- JS interop -->
+        <dependency>
+            <groupId>org.graalvm.sdk</groupId>
+            <artifactId>graal-sdk</artifactId>
+            <version>${graalvm.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.graalvm.js</groupId>
+            <artifactId>js</artifactId>
+            <version>${graalvm.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.graalvm.js</groupId>
+            <artifactId>js-scriptengine</artifactId>
+            <version>${graalvm.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.graalvm.tools</groupId>
+            <artifactId>profiler</artifactId>
+            <version>${graalvm.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.graalvm.tools</groupId>
+            <artifactId>chromeinspector</artifactId>
+            <version>${graalvm.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- Logging -->
+        <!-- specific implementation will be provided -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+
+        <!-- Testing -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <artifactId>junit</artifactId>
+            <groupId>junit</groupId>
+            <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <artifactId>hamcrest-core</artifactId>
+                    <groupId>org.hamcrest</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-library</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.jayway.jsonpath</groupId>
+            <artifactId>json-path</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.jayway.jsonpath</groupId>
+            <artifactId>json-path-assert</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>${project.basedir}/src/main/resources</directory>
+            </resource>
+        </resources>
+
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>${version.build-helper-maven-plugin}</version>
+                <executions>
+                    <execution>
+                        <id>add_js_unit_tests</id>
+                        <phase>generate-test-sources</phase>
+                        <goals>
+                            <goal>add-test-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${project.basedir}/src/test/js</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Pre-fetches required GraalVM / Graal.JS pieces -->
+            <plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>${version.maven-dependency-plugin}</version>
+                <executions>
+                    <execution>
+                        <id>copy</id>
+                        <phase>process-test-classes</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.graalvm.compiler</groupId>
+                                    <artifactId>compiler</artifactId>
+                                    <version>${graalvm.version}</version>
+                                    <type>jar</type>
+                                    <overWrite>true</overWrite>
+                                    <destFileName>compiler.jar</destFileName>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.graalvm.truffle</groupId>
+                                    <artifactId>truffle-api</artifactId>
+                                    <version>${graalvm.version}</version>
+                                    <type>jar</type>
+                                    <overWrite>true</overWrite>
+                                    <destFileName>truffle-api.jar</destFileName>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.graalvm.sdk</groupId>
+                                    <artifactId>graal-sdk</artifactId>
+                                    <version>${graalvm.version}</version>
+                                    <type>jar</type>
+                                    <overWrite>true</overWrite>
+                                    <destFileName>graal-sdk.jar</destFileName>
+                                </artifactItem>
+                            </artifactItems>
+                            <outputDirectory>${project.build.directory}/compiler</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Adds JavaScript support in tests via Graal.JS -->
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${version.surefire-failsafe-plugin}</version>
+                <configuration>
+                    <argLine>
+                        --illegal-access=permit
+                        -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCI
+                        --module-path=${compiler.dir}
+                        --upgrade-module-path=${compiler.dir}/compiler.jar
+                    </argLine>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>${version.surefire-failsafe-plugin}</version>
+                <configuration>
+                    <argLine>
+                        --illegal-access=permit
+                        -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCI
+                        --module-path=${compiler.dir}
+                        --upgrade-module-path=${compiler.dir}/compiler.jar
+                    </argLine>
+                </configuration>
+            </plugin>
+
+            <!-- TODO: Configure 'maven-release-plugin' for local repo. For 'marksto' libs only? -->
+        </plugins>
+    </build>
+
+</project>

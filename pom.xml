@@ -1,36 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--suppress MavenModelInspection -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <artifactId>maven</artifactId>
-        <groupId>marksto</groupId>
-        <version>0.1.0-SNAPSHOT</version>
-    </parent>
     <modelVersion>4.0.0</modelVersion>
 
+    <groupId>name.marksto</groupId>
     <artifactId>data-sources</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
+    <version>0.1.0</version>
     <packaging>jar</packaging>
 
     <name>Data Sources</name>
     <description>Google Spreadsheets as reactive remote Data Sources in Java</description>
 
     <properties>
-        <java.version>12</java.version>
-        <java.test.version>12</java.test.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
+        <java.version>12</java.version>
+        <java.test.version>${java.version}</java.test.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <maven.compiler.testSource>${java.test.version}</maven.compiler.testSource>
         <maven.compiler.testTarget>${java.test.version}</maven.compiler.testTarget>
 
-        <graalvm.version>19.0.0</graalvm.version>
-        <compiler.dir>${project.build.directory}/compiler</compiler.dir>
+        <!-- versions of Maven plugins -->
+        <version.maven-antrun-plugin>1.8</version.maven-antrun-plugin>
+        <version.maven-compiler-plugin>3.8.1</version.maven-compiler-plugin>
 
-        <!-- versions of used libraries and frameworks -->
+        <!-- versions of used frameworks -->
+        <version.spring-boot>2.1.8.RELEASE</version.spring-boot>
+
+        <!-- versions of used libraries -->
         <version.commons-collections4>4.4</version.commons-collections4>
         <version.commons-beanutils>1.9.4</version.commons-beanutils>
+        <version.commons-io>2.6</version.commons-io>
         <version.google-api>1.30.1</version.google-api>
         <version.google-api-sheets>v4-rev20190813-1.30.1</version.google-api-sheets>
         <version.google-auth-library-credentials>0.17.1</version.google-auth-library-credentials>
@@ -41,16 +45,24 @@
         <version.reactor>3.2.12.RELEASE</version.reactor>
         <version.reactor-extra>3.2.3.RELEASE</version.reactor-extra>
         <version.vavr>1.0.0-alpha-3</version.vavr>
+
+        <version.common>0.1.0</version.common>
+        <in-project.path>${project.basedir}/lib</in-project.path>
     </properties>
 
-    <dependencies>
-        <!-- shared modules -->
-        <dependency>
-            <groupId>marksto</groupId>
-            <artifactId>common</artifactId>
-            <version>0.1.0-SNAPSHOT</version>
-        </dependency>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${version.spring-boot}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
+    <dependencies>
         <!-- Manifold -->
         <dependency>
             <groupId>systems.manifold</groupId>
@@ -104,11 +116,6 @@
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-annotations</artifactId>
-            <version>${version.jackson}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>${version.jackson}</version>
         </dependency>
@@ -126,11 +133,7 @@
         <!-- Spring Framework -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-json</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-logging</artifactId>
+            <artifactId>spring-boot-starter</artifactId>
         </dependency>
 
         <!-- Common Libs -->
@@ -151,6 +154,11 @@
             <groupId>commons-beanutils</groupId>
             <artifactId>commons-beanutils</artifactId>
             <version>${version.commons-beanutils}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>${version.commons-io}</version>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
@@ -251,7 +259,22 @@
             <artifactId>json-path-assert</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <!-- shared modules -->
+        <dependency>
+            <groupId>name.marksto</groupId>
+            <artifactId>common</artifactId>
+            <version>${version.common}</version>
+        </dependency>
     </dependencies>
+
+    <repositories>
+        <repository>
+            <id>in-project</id>
+            <name>In Project Repo</name>
+            <url>file://${in-project.path}</url>
+        </repository>
+    </repositories>
 
     <build>
         <resources>
@@ -262,7 +285,37 @@
 
         <plugins>
             <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.8</version>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <!-- This artifact is in library distribution, don't enable the task locally -->
+                            <target if="copy-common-artifact">
+                                <property name="path_to_common_lib"
+                                          value="${in-project.path}/name/marksto/common/${version.common}"/>
+
+                                <delete includeemptydirs="true">
+                                    <fileset dir="${in-project.path}/name/marksto" includes="common/**"/>
+                                </delete>
+                                <copy todir="${path_to_common_lib}">
+                                    <fileset dir="../common/target" includes="*.jar"/>
+                                </copy>
+                                <copy file="../common/pom.xml"
+                                      tofile="${path_to_common_lib}/common-${version.common}.pom"/>
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>${version.maven-compiler-plugin}</version>
                 <configuration>
                     <compilerArgs>
                         <!-- TODO: Switch to Dynamic Mode later (see 'ManifoldUtils') -->

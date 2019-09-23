@@ -3,7 +3,6 @@ package marksto.data.config.properties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.boot.convert.DurationUnit;
-import org.springframework.security.core.CredentialsContainer;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
@@ -11,7 +10,7 @@ import java.time.temporal.ChronoUnit;
 @ConfigurationProperties("sheets")
 public class SheetsProperties {
 
-    public static class Client implements CredentialsContainer {
+    public static class Client {
 
         private ClientType type;
         private String name;
@@ -41,7 +40,6 @@ public class SheetsProperties {
             this.secret = secret;
         }
 
-        @Override
         public void eraseCredentials() {
             secret = null;
         }

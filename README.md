@@ -257,42 +257,106 @@ But there's always a lower-level `GoogleSheetsService` for abstractions to leak.
 
 There is also the thinnest domain model represented by the [DomainType](marksto.data.model.DomainType.java) interface 
 and its implementations. With these you wrap your actual domain models to pass them between your client code and the 
-core library services.
+core library services. See [examples](#using) below.
 
 
-### Client code
+### Using
 
-An arbitrary _Spring WebFlux_ controller method for Data Sources metadata retrieval might look like this:
+1. First, add _Data Sources_ as a dependency in your build/project-management system, for instance with Maven add [JitPack](https://jitpack.io/) 
+as a repository and the [latest release](https://github.com/marksto/data-sources/releases) as an artifact in the `pom.xml`:
 
-```java
-    @PostMapping(path = "/update", consumes = APPLICATION_JSON_UTF8_VALUE)
-    public Flux<DataSource> updateDataSources(@RequestBody DataSource_Update body) {
-        if (StringUtils.isEmpty(data.getDataSource())) {
-            return dataSourcesService.retrieveDataSources(body.getForceRemote());
-        } else {
-            return dataSourcesService.retrieveDataSource(body.getName(), body.getForceRemote()).flux();
+    ```xml
+    <repository>
+        <id>jitpack.io</id>
+        <url>https://jitpack.io</url>
+    </repository>
+    
+    ...
+    
+    <dependency>
+        <groupId>com.github.marksto</groupId>
+        <artifactId>data-sources</artifactId>
+        <version>RELEASE_VERSION</version>
+    </dependency>
+    ```
+
+2. Then, tune your Spring-based project configuration:
+
+    * For basic feature set, import the following Spring configurations:
+
+    ```java
+    @Import({
+        marksto.data.config.ServiceConfiguration.class,
+        marksto.data.config.MappingConfiguration.class
+    })
+    ```
+
+    * If you want to use the `EventReactivePublisher` features, add the following configuration as well:
+    
+    ```java
+    @ComponentScan("marksto.events.service")
+    
+    ...
+    
+    @Bean("eventExecutor")
+    public Executor executor() {
+       return Executors.newSingleThreadExecutor();
+    }
+    ```
+
+    [//]: # (TODO: Describe this features in more detail in a dedicated section.)
+
+3. Now you are good to use Data Sources in your client code!
+
+    * An arbitrary _Spring WebFlux_ controller method for Data Sources metadata retrieval might look like this:
+    
+    ```java
+        @PostMapping(path = "/update", consumes = APPLICATION_JSON_UTF8_VALUE)
+        public Flux<DataSource> updateDataSources(@RequestBody DataSource_Update body) {
+            if (StringUtils.isEmpty(data.getDataSource())) {
+                return dataSourcesService.retrieveDataSources(body.getForceRemote());
+            } else {
+                return dataSourcesService.retrieveDataSource(body.getName(), body.getForceRemote()).flux();
+            }
         }
-    }
+    ```
+
+    * At the same time, _retrieving remote data_ from registered Data Sources may look like this:
+    
+    ```java
+        private static final DomainType<Design> DESIGNS = new StaticType<>("designs", Design.class);
+        private static final DomainType<Assemblage> ASSEMBLAGES = new StaticType<>("assemblages", Assemblage.class);
+        private static final DomainType<Position> PRICE_LIST_POSITIONS = new StaticType<>("positions", Position.class);
+    
+        private static final DomainType[] PRODUCT_REQUIRED_DOMAIN_TYPES = { DESIGNS, ASSEMBLAGES, PRICE_LIST_POSITIONS };
+    
+        private Mono<List<TypedObjects>> uploadRequiredRemoteData() {
+            return dataRetrievalService
+                    .getDataFrom(PRODUCT_REQUIRED_DOMAIN_TYPES)
+                    .collectList();
+        }
+    ```
+
+    Note the `StaticType` being used to wrap `designs`, `assemblages` and `positions` which are the names of the _business 
+    entities_ which are used, among other things, as keys in [data mapping](#data-mapping) ruleset.
+
+
+### Building
+
+To build Data Sources locally you'll need [Maven 3](http://maven.apache.org).
+
+While in the project root as a working directory, build and install the project with the following command:
+
+```bash
+mvn clean install
 ```
 
-At the same time, retrieving remote data from registered Data Sources may look like this:
+You will get a fresh `target/data-sources-{version}.jar` file within the project, as well as its copy installed 
+in your local Maven repository under the following path:
 
-```java
-    private static final DomainType<Design> DESIGNS = new StaticType<>("designs", Design.class);
-    private static final DomainType<Assemblage> ASSEMBLAGES = new StaticType<>("assemblages", Assemblage.class);
-    private static final DomainType<Position> PRICE_LIST_POSITIONS = new StaticType<>("positions", Position.class);
-
-    private static final DomainType[] PRODUCT_REQUIRED_DOMAIN_TYPES = { DESIGNS, ASSEMBLAGES, PRICE_LIST_POSITIONS };
-
-    private Mono<List<TypedObjects>> uploadRequiredRemoteData() {
-        return dataRetrievalService
-                .getDataFrom(PRODUCT_REQUIRED_DOMAIN_TYPES)
-                .collectList();
-    }
+```bash
+$M2_REPO/name/marksto/data-sources/{version}/data-sources-{version}.jar
 ```
-
-Note the `StaticType` being used to wrap `designs`, `assemblages` and `positions` which are the names of the _business 
-entities_ which are used, among other things, as keys in [data mapping](#data-mapping) ruleset.
 
 
 ### What's inside
