@@ -140,7 +140,7 @@ public class ValueRangesMapper {
         } catch (Exception e) {
             LOG.error("Was not able to instantiate objects of type '{}'", typeEntry.getType());
         }
-        LOG.trace("Instantiated objects total number = '{}'", entities.size());
+        LOG.trace("Instantiated objects total number={}", entities.size());
 
         if (maxNumberOfTypedEntities > 0) {
             for (Map.Entry<String, ValueRange> typeValueRange : typeValueRanges.entrySet()) {
@@ -157,7 +157,7 @@ public class ValueRangesMapper {
                 return valuesList == null ? 0 : valuesList.size();
             })
             .max().orElse(0);
-        LOG.trace("Max number of Type entities = '{}'", maxNumberOfTypeEntities);
+        LOG.trace("Max number of Type entities={}", maxNumberOfTypeEntities);
         return maxNumberOfTypeEntities;
     }
 
