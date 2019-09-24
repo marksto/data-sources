@@ -7,7 +7,7 @@
 
     <groupId>name.marksto</groupId>
     <artifactId>data-sources</artifactId>
-    <version>0.1.0</version>
+    <version>0.1.1</version>
     <packaging>jar</packaging>
 
     <name>Data Sources</name>
@@ -26,7 +26,9 @@
 
         <!-- versions of Maven plugins -->
         <version.maven-antrun-plugin>1.8</version.maven-antrun-plugin>
+        <version.checksum-maven-plugin>1.8</version.checksum-maven-plugin>
         <version.maven-compiler-plugin>3.8.1</version.maven-compiler-plugin>
+        <version.maven-shade-plugin>3.2.1</version.maven-shade-plugin>
 
         <!-- versions of used frameworks -->
         <version.spring-boot>2.1.8.RELEASE</version.spring-boot>
@@ -286,7 +288,7 @@
         <plugins>
             <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
-                <version>1.8</version>
+                <version>${version.maven-antrun-plugin}</version>
                 <executions>
                     <execution>
                         <phase>generate-sources</phase>
@@ -314,6 +316,35 @@
             </plugin>
 
             <plugin>
+                <groupId>net.nicoulaj.maven.plugins</groupId>
+                <artifactId>checksum-maven-plugin</artifactId>
+                <version>${version.checksum-maven-plugin}</version>
+                <executions>
+                    <execution>
+                        <phase>process-sources</phase>
+                        <goals>
+                            <goal>files</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <fileSets>
+                        <fileSet>
+                            <directory>${in-project.path}</directory>
+                            <includes>
+                                <include>**/*.jar</include>
+                                <include>**/*.pom</include>
+                            </includes>
+                        </fileSet>
+                    </fileSets>
+                    <algorithms>
+                        <algorithm>MD5</algorithm>
+                        <algorithm>SHA-1</algorithm>
+                    </algorithms>
+                </configuration>
+            </plugin>
+
+            <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${version.maven-compiler-plugin}</version>
                 <configuration>
@@ -329,6 +360,23 @@
                             <version>${version.manifold}</version>
                         </path>
                     </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>${version.maven-shade-plugin}</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <keepDependenciesWithProvidedScope>true</keepDependenciesWithProvidedScope>
+                    <createDependencyReducedPom>true</createDependencyReducedPom>
                 </configuration>
             </plugin>
         </plugins>

@@ -343,7 +343,7 @@ as a repository and the [latest release](https://github.com/marksto/data-sources
 
 ### Building
 
-To build Data Sources locally you'll need [Maven 3](http://maven.apache.org).
+To build _Data Sources_ locally you'll need [Java 12 or later](https://adoptopenjdk.net/) and [Maven 3](http://maven.apache.org).
 
 While in the project root as a working directory, build and install the project with the following command:
 
