@@ -237,11 +237,40 @@ Please, mind that indexing starts from `0` which is usual for Java.
 
 
 
-## The Code
+## Using
 
 > Talk is cheap. Show me the code.
 >
 > &mdash; Linus Torvalds
+
+
+### Dependency
+
+First, add _Data Sources_ as a dependency in your build/project-management system, for instance with Maven add [JitPack](https://jitpack.io/) 
+as a repository and the [latest release](https://github.com/marksto/data-sources/releases) as an artifact in the `pom.xml`:
+
+    ```xml
+    <repositories>
+        ...
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+        ...
+    </repositories>
+    
+    ...
+    
+    <dependencies>
+        ...
+        <dependency>
+            <groupId>com.github.marksto</groupId>
+            <artifactId>data-sources</artifactId>
+            <version>RELEASE_VERSION</version>
+        </dependency>
+        ...
+    </dependencies>
+    ```
 
 
 ### API
@@ -255,34 +284,16 @@ The main API is consolidated within these _core services_ (see their JavaDoc for
 Most of the time the first two are enough for the aforementioned data sources synchronization and mapping functionality.
 But there's always a lower-level `GoogleSheetsService` for abstractions to leak.
 
-There is also the thinnest domain model represented by the [DomainType](marksto.data.model.DomainType.java) interface 
-and its implementations. With these you wrap your actual domain models to pass them between your client code and the 
-core library services. See [examples](#using) below.
+There is also the thinnest domain model represented by the [DomainType](src/main/java/marksto/data/model/DomainType.java) 
+interface and its implementations. With these you wrap your actual domain models to pass them between your client code 
+and the core library services. See the data mapping [example](#data-mapping-feature) below.
 
 
-### Using
+### Basic Features
 
-1. First, add _Data Sources_ as a dependency in your build/project-management system, for instance with Maven add [JitPack](https://jitpack.io/) 
-as a repository and the [latest release](https://github.com/marksto/data-sources/releases) as an artifact in the `pom.xml`:
+The basic feature set consists of operations on Data Sources level: registration, retrieval, and synchronization.
 
-    ```xml
-    <repository>
-        <id>jitpack.io</id>
-        <url>https://jitpack.io</url>
-    </repository>
-    
-    ...
-    
-    <dependency>
-        <groupId>com.github.marksto</groupId>
-        <artifactId>data-sources</artifactId>
-        <version>RELEASE_VERSION</version>
-    </dependency>
-    ```
-
-2. Then, tune your Spring-based project configuration:
-
-    * For basic feature set, import the following Spring configurations:
+1. Supplement your Spring-based project with the following configuration:
 
     ```java
     @Import({
@@ -291,10 +302,86 @@ as a repository and the [latest release](https://github.com/marksto/data-sources
     })
     ```
 
-    * If you want to use the `EventReactivePublisher` features, add the following configuration as well:
-    
+2. Provide the **required** basic configuration properties (see [Configuration](#configuration) below).
+
+3. Now you are good to use Data Sources in your client code! An arbitrary _Spring WebFlux_ controller code for 
+Data Sources metadata retrieval (update) and synchronization might look like this:
+
     ```java
-    @ComponentScan("marksto.events.service")
+        public static final String SYNC_ALL_ACTION = "syncAll";
+        
+        ...
+        
+        private final DataSourcesService dataSourcesService;
+        
+        ...
+        
+        @PostMapping(path = "/update", consumes = APPLICATION_JSON_UTF8_VALUE)
+        public Flux<DataSource> updateDataSources(@RequestBody DataSource_Update body) {
+            if (StringUtils.isEmpty(body.getDataSource())) {
+                return dataSourcesService.retrieveDataSources(body.getForceRemote());
+            } else {
+                return dataSourcesService.retrieveDataSource(body.getName(), body.getForceRemote()).flux();
+            }
+        }
+        
+        @PostMapping(path = "/sync", consumes = APPLICATION_JSON_UTF8_VALUE)
+        public Mono<Void> synchronizeDataSources(@RequestBody DataSource_Sync body) {    
+            if (SYNC_ALL_ACTION.equals(body.getActionType())) {
+                return dataSourcesService.synchronizeData();
+            } else {
+                return dataSourcesService.synchronizeDataBetween(
+                        body.getDependency(), body.getDataSource(), body.getAndSubGraph());
+            }
+        }
+    ```
+
+
+### Data Mapping Feature
+
+In case you want to use the [data mapping](#data-mapping) capabilities of the _Data Sources_ library:
+
+1. Introduce your [data models](#data-models) and Google Spreadsheets named value ranges mapping rules for them.
+Place models anywhere under the `resources` directory and mapping rules under the configured `app.data.mapping.path`.
+
+2. An arbitrary service code that _retrieves remote data_ from registered Data Sources may look like this:
+
+    ```java
+        private static final DomainType<Design> DESIGNS = new StaticType<>("designs", Design.class);
+        private static final DomainType<Assemblage> ASSEMBLAGES = new StaticType<>("assemblages", Assemblage.class);
+        private static final DomainType<Position> PRICE_LIST_POSITIONS = new StaticType<>("positions", Position.class);
+    
+        private static final DomainType[] PRODUCT_REQUIRED_DOMAIN_TYPES = { DESIGNS, ASSEMBLAGES, PRICE_LIST_POSITIONS };
+        
+        ...
+        
+        private final DataRetrievalService dataRetrievalService;
+        
+        ...
+        
+        private Mono<List<TypedObjects>> uploadRequiredRemoteData() {
+            return dataRetrievalService
+                    .getDataFrom(PRODUCT_REQUIRED_DOMAIN_TYPES)
+                    .collectList();
+        }
+    ```
+
+Note the `StaticType` being used to wrap `designs`, `assemblages` and `positions` which are the names of the _business 
+entities_ which are used, among other things, as keys in [data mapping](#data-mapping) ruleset.
+
+
+### Data Sources Events Feature
+
+In case you want to use the `EventReactivePublisher` features, e.g. for streaming operation status events to clients:
+
+[//]: # (TODO: Describe this features in more detail in a dedicated section.)
+
+1. Supply the following configuration as well:
+
+    ```java
+    @ComponentScan({
+        "marksto.events.service"
+    })
     
     ...
     
@@ -304,82 +391,27 @@ as a repository and the [latest release](https://github.com/marksto/data-sources
     }
     ```
 
-    [//]: # (TODO: Describe this features in more detail in a dedicated section.)
+2. An arbitrary _Spring WebFlux_ controller code for _events streaming_ might look like this:
 
-3. Now you are good to use Data Sources in your client code!
-
-    * An arbitrary _Spring WebFlux_ controller method for Data Sources metadata retrieval might look like this:
-    
     ```java
-        @PostMapping(path = "/update", consumes = APPLICATION_JSON_UTF8_VALUE)
-        public Flux<DataSource> updateDataSources(@RequestBody DataSource_Update body) {
-            if (StringUtils.isEmpty(data.getDataSource())) {
-                return dataSourcesService.retrieveDataSources(body.getForceRemote());
-            } else {
-                return dataSourcesService.retrieveDataSource(body.getName(), body.getForceRemote()).flux();
-            }
-        }
+    private final EventReactivePublisher eventReactivePublisher;
+    
+    ...
+    
+    @GetMapping(path = "/status/events", produces = TEXT_EVENT_STREAM_VALUE)
+    public Flux<DataSourceEvent> streamStatusEvents() {
+        return eventReactivePublisher.on(DataSourceEvent.class);
+    }
     ```
 
-    * At the same time, _retrieving remote data_ from registered Data Sources may look like this:
-    
-    ```java
-        private static final DomainType<Design> DESIGNS = new StaticType<>("designs", Design.class);
-        private static final DomainType<Assemblage> ASSEMBLAGES = new StaticType<>("assemblages", Assemblage.class);
-        private static final DomainType<Position> PRICE_LIST_POSITIONS = new StaticType<>("positions", Position.class);
-    
-        private static final DomainType[] PRODUCT_REQUIRED_DOMAIN_TYPES = { DESIGNS, ASSEMBLAGES, PRICE_LIST_POSITIONS };
-    
-        private Mono<List<TypedObjects>> uploadRequiredRemoteData() {
-            return dataRetrievalService
-                    .getDataFrom(PRODUCT_REQUIRED_DOMAIN_TYPES)
-                    .collectList();
-        }
-    ```
 
-    Note the `StaticType` being used to wrap `designs`, `assemblages` and `positions` which are the names of the _business 
-    entities_ which are used, among other things, as keys in [data mapping](#data-mapping) ruleset.
-
-
-### Building
-
-To build _Data Sources_ locally you'll need [Java 12 or later](https://adoptopenjdk.net/) and [Maven 3](http://maven.apache.org).
-
-While in the project root as a working directory, build and install the project with the following command:
-
-```bash
-mvn clean install
-```
-
-You will get a fresh `target/data-sources-{version}.jar` file within the project, as well as its copy installed 
-in your local Maven repository under the following path:
-
-```bash
-$M2_REPO/name/marksto/data-sources/{version}/data-sources-{version}.jar
-```
-
-
-### What's inside
-
-Under the hood Data Sources leverage:
-
-- **Google Sheets API client** with OAuth 2.0 credentials of the [service account](https://cloud.google.com/docs/authentication/production)
-- [JSON Schema](https://json-schema.org/) for Data Sources and Data Mapping definition (with support for validation)
-- [Manifold](https://github.com/manifold-systems/manifold) as the main data modeling framework with support for dynamic 
-  type reloading
-- [Kryo](https://github.com/EsotericSoftware/kryo) and [BeanUtils](https://commons.apache.org/proper/commons-beanutils/) 
-  for responses deserialization via the data mapping rules
-- [Project Reactor](https://projectreactor.io/) as a Reactive Streams API for data flows
-
-
-
-## Configuration
+### Configuration
 
 The standard `application.properties` are used to configure the core services.
 
-### GoogleSheetsService
+#### GoogleSheetsService
 
-The basic configuration:
+The **required** basic configuration:
 
 ```properties
 sheets.client.type=SERVICE_ACCOUNT
@@ -412,9 +444,9 @@ sheets.apiCheckMaxBackoff=10s
 
 Please, find the detailed description of these in [SheetsProperties](src/main/java/marksto/data/config/properties/SheetsProperties.java).
 
-### DataSourcesService
+#### DataSourcesService
 
-The basic configuration:
+The **required** basic configuration:
 
 ```properties
 app.data.sources.sheets-ids=<comma-separated list of spreadsheets IDs to pre-initialise>
@@ -432,18 +464,23 @@ app.data.sources.reInitRetriesNum=1
 
 Please, find the detailed description of these in [DataSourcesProperties](src/main/java/marksto/data/config/properties/DataSourcesProperties.java).
 
-### DataMappingService
+#### DataMappingService
 
-The basic configuration:
+The **required** basic configuration:
 
 ```properties
 app.data.mapping.path=<e.g. '/data/meta/data-mapping.json'>
+```
+
+Advanced properties with their defaults (for fine tuning):
+
+```properties
 app.data.mapping.expireCacheEvery= ##unset##
 ```
 
 Please, find the detailed description of these in [DataMappingProperties](src/main/java/marksto/data/config/properties/DataMappingProperties.java).
 
-### Data providers
+#### Data providers
 
 Advanced properties with their defaults (for fine tuning):
 ```properties
@@ -460,6 +497,13 @@ app.data.providers.retrieveData1stBackoff=500ms
 Please, find the detailed description of these in [DataProvidersProperties](src/main/java/marksto/data/config/properties/DataProvidersProperties.java).
 
 
+### Caveats
+
+**TBD**
+
+[//]: # (TODO: Add possible caveats, e.g. when named ranges size is not enough for synchronization.)
+
+
 
 ## Usage Examples
 
@@ -468,13 +512,13 @@ service initializes `8` Data Sources upon the application startup (the exemplary
 
 Here's how it looks like in a dedicated Spring WebFlux-based _Admin UI_.
 
-![Read from file](./doc/Tk%20Admin%20-%20Data%20Init.png "Tera kulta Admin UI — Data Initialization example")
+![Tk Admin - Data Init](./doc/Tk%20Admin%20-%20Data%20Init.png "Tera kulta Admin UI — Data Initialization example")
 
 And here's how actually _slow_ they get fully synchronized. Of course, this is due to the Google Spreadsheets themselves
 which are well-known for their catastrophic slowdown on fairly large data sets. Just imagine how terrible and error-prone 
 would it be to synchronize all these spreadsheets manually! With Data Sources it's just a single method call!
 
-![Read from file](./doc/Tk%20Admin%20-%20Data%20Sync.png "Tera kulta Admin UI — Data Synchronization example")
+![Tk Admin - Data Sync](./doc/Tk%20Admin%20-%20Data%20Sync.png "Tera kulta Admin UI — Data Synchronization example")
 
 In **Tera kulta** we use Data Sources to compose a _localized price-list_ of more than 3,500 stock items from hundreds
 of thousands of pre-calculated cell values synchronized between spreadsheets, which then get converted into Tilda CSV
@@ -484,21 +528,51 @@ format and split into semi-equal parts, which can then be easily uploaded to the
 
 
 
-## Caveats
+## Contributing
 
-**TBD**
+### Building
 
-[//]: # (TODO: Add possible caveats, e.g. when named ranges size is not enough for synchronization.)
+To build _Data Sources_ locally you'll need [Java 12 or later](https://adoptopenjdk.net/) and [Maven 3](http://maven.apache.org).
+
+While in the project root as a working directory, build and install the project with the following command:
+
+```bash
+mvn clean install
+```
+
+You will get a fresh `target/data-sources-{version}.jar` file within the project, as well as its copy installed 
+in your local Maven repository under the following path:
+
+```bash
+$M2_REPO/name/marksto/data-sources/{version}/data-sources-{version}.jar
+```
 
 
+### What's inside
 
-## Future Development
+Under the hood Data Sources leverage:
+
+- **Google Sheets API client** with OAuth 2.0 credentials of the [service account](https://cloud.google.com/docs/authentication/production)
+- [JSON Schema](https://json-schema.org/) for Data Sources and Data Mapping definition (with support for validation)
+- [Manifold](https://github.com/manifold-systems/manifold) as the main data modeling framework with support for dynamic 
+  type reloading
+- [Kryo](https://github.com/EsotericSoftware/kryo) and [BeanUtils](https://commons.apache.org/proper/commons-beanutils/) 
+  for responses deserialization via the data mapping rules
+- [Project Reactor](https://projectreactor.io/) as a Reactive Streams API for data flows
+
+Make sure you are familiar with these, especially the [Reactor's documentation](https://projectreactor.io/docs/core/release/reference/index.html).
+
+**NB:** You might want to install the (paid) _Manifold_ IntelliJ IDEA plugin for better meta-programming experience.
+
+
+### Future Development
 
 - Add new features such as _Dynamic Domain Types_ support for reloading data models in runtime
 - Make Sheets API use an asynchronous non-blocking web client (Spring's `WebClient`)
+- Upload/download data sources and data mapping to/from the Google Drive
 - Describe data mapping rules in more details with examples
 - Create an environment for live demonstration
-- Add more tests ¯\\\_(ツ)\_/¯
+- Add more unit tests ¯\\\_(ツ)\_/¯
 
 
 
