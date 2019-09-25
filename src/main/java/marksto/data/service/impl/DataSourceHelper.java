@@ -42,7 +42,7 @@ class DataSourceHelper {
 
     static String generateRandomName(final String prefix) {
         String randomName = UUID.randomUUID().toString().substring(0, 4);
-        return Joiner.on('-').join(prefix, randomName);
+        return prefix == null ? randomName : Joiner.on('-').join(prefix, randomName);
     }
 
     // -------------------------------------------------------------------------

@@ -19,6 +19,13 @@ public class DataMappingProperties {
     private String path;
 
     /**
+     * Specifies the fixed number of worker threads in the mapping scheduler TPE.
+     *
+     * @see marksto.data.config.MappingConfiguration
+     */
+    private int threadPoolSize = 2;
+
+    /**
      * Sets the expiration (eviction) period for cached <em>Data Mapping</em>.<br/>
      * The default is to never expire the cached entry.
      */
@@ -31,6 +38,14 @@ public class DataMappingProperties {
 
     public void setPath(String path) {
         this.path = path;
+    }
+
+    public int getThreadPoolSize() {
+        return threadPoolSize;
+    }
+
+    public void setThreadPoolSize(int threadPoolSize) {
+        this.threadPoolSize = threadPoolSize;
     }
 
     public Duration getExpireCacheEvery() {

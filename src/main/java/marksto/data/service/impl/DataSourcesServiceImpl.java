@@ -10,14 +10,11 @@ import marksto.data.service.DataSourceInitializer;
 import marksto.data.service.DataSourcesService;
 import marksto.data.events.service.OperationStatusPublisher;
 import marksto.web.mapping.JsonResourcesMapper;
-import org.apache.commons.lang3.NotImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.MessageSource;
 import org.springframework.context.event.EventListener;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -36,7 +33,6 @@ import static marksto.common.util.ReactivePreconditions.*;
 import static marksto.data.config.ExitCode.*;
 import static marksto.data.service.impl.DataSourceHelper.*;
 import static marksto.events.OperationStatusEvent.Status.*;
-import static marksto.web.config.ServiceConfiguration.DevServices;
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
@@ -78,9 +74,6 @@ public class DataSourcesServiceImpl implements DataSourcesService {
     private static final String SYNC_FAILURE = "Sync with '%s' failed!";
     private static final String SYNCHRONIZATION_FINISHED = "Data sync finished";
 
-    // UI Messages Codes
-    private static final String NAME_PREFIX_CODE = "data.sources.name-prefix";
-
     // -------------------------------------------------------------------------
 
     private final DataSourcesProperties dataSourcesProperties;
@@ -93,20 +86,16 @@ public class DataSourcesServiceImpl implements DataSourcesService {
 
     private final OperationStatusPublisher statusPublisher;
 
-    private final MessageSource messageSource;
-
     public DataSourcesServiceImpl(DataSourcesProperties dataSourcesProperties,
                                   GoogleSheetsService sheetsService,
                                   DataSourceInitializer dataSourceInitializer,
                                   @Qualifier("dataSourceMapper") JsonResourcesMapper jsonResourcesMapper,
-                                  OperationStatusPublisher statusPublisher,
-                                  MessageSource messageSource) {
+                                  OperationStatusPublisher statusPublisher) {
         this.dataSourcesProperties = dataSourcesProperties;
         this.sheetsService = sheetsService;
         this.dataSourceInitializer = dataSourceInitializer;
         this.jsonResourcesMapper = jsonResourcesMapper;
         this.statusPublisher = statusPublisher;
-        this.messageSource = messageSource;
     }
 
     // -------------------------------------------------------------------------
@@ -230,8 +219,7 @@ public class DataSourcesServiceImpl implements DataSourcesService {
     private String provideUniqueName() {
         String randomName;
         do {
-            Locale locale = LocaleContextHolder.getLocale();
-            String prefix = messageSource.getMessage(NAME_PREFIX_CODE, null, locale);
+            final String prefix = dataSourcesProperties.getDefaultNamePrefix();
             randomName = generateRandomName(prefix);
         } while (dataSourcesCache.getIfPresent(randomName) != null);
         return randomName;
@@ -260,12 +248,13 @@ public class DataSourcesServiceImpl implements DataSourcesService {
         LOG.debug("Persisting the Data Sources as JSON file — Starting...");
         statusPublisher.publishStatusForDataSources(PERSISTING);
 
-        if (DevServices.isInDevelopment()) {
+        // TODO: Implement this switch in a different fashion. Check both for DEV and for a feature flag.
+        //if (DevServices.isInDevelopment()) {
             // NOTE: Persists the 'dataSourcesCache' into the filesystem under the 'target' directory.
             jsonResourcesMapper.mapToFile(getDataSourcesMap(), dataSourcesProperties.getPath());
-        } else {
-            throw new NotImplementedException("Google Drive persistence is not implemented yet");
-        }
+        //} else {
+        //    throw new NotImplementedException("Google Drive persistence is not implemented yet");
+        //}
 
         LOG.debug("Persisting the Data Sources as JSON file — Finished!");
     }

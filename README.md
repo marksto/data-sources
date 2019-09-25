@@ -81,7 +81,7 @@ a new Data Source.
 
 The metadata that one is required to provide (in a form of named value ranges) for a particular Data Source consists of:
 
-- the `spreadsheet_name`, a unique Data Source identifier
+- the `spreadsheet_name`, a unique Data Source identifier (**required**)
 
 - a set of `3` indicators calculated by _boolean_ spreadsheet formulas:
   * `spreadsheet_status_api_ready` — indicates the absence of running re-calculations
@@ -304,6 +304,19 @@ The basic feature set consists of operations on Data Sources level: registration
 
 2. Provide the **required** basic configuration properties (see [Configuration](#configuration) below).
 
+   If you configured everything right, the startup logs should look similar to these:
+   
+   ```
+   2019-09-25 03:26:39.604  INFO 43541 --- [           main] m.d.s.impl.RemoteDataSourceInitializer   : Initializing a Data Source for '1ZWM...'
+   2019-09-25 03:26:39.704  INFO 43541 --- [hot-timeouter-0] m.d.i.s.impl.GoogleSheetsServiceImpl     : Establishing connection to the remote service...
+   2019-09-25 03:26:42.579  INFO 43541 --- [hot-timeouter-0] m.d.i.s.impl.GoogleSheetsServiceImpl     : Connection established successfully
+   2019-09-25 03:26:43.090  WARN 43541 --- [ remote-calls-3] m.d.s.impl.DataMappingProviderImpl       : No 'data-mapping.json' file provided, only the default one is used
+   2019-09-25 03:26:47.032  INFO 43541 --- [       mapper-0] m.d.service.impl.DataSourcesServiceImpl  : Registering new DataSource: name='tk-products'
+   ```
+   
+   Note that `tk-products` here comes from a dedicated named value range (`spreadsheet_name`) in the provided spreadsheet.
+   Find more details on what metadata you need to provide in your [Data Source](#data-source).
+
 3. Now you are good to use Data Sources in your client code! An arbitrary _Spring WebFlux_ controller code for 
 Data Sources metadata retrieval (update) and synchronization might look like this:
 
@@ -341,10 +354,12 @@ Data Sources metadata retrieval (update) and synchronization might look like thi
 
 In case you want to use the [data mapping](#data-mapping) capabilities of the _Data Sources_ library:
 
-1. Introduce your [data models](#data-models) and Google Spreadsheets named value ranges mapping rules for them.
-Place models anywhere under the `resources` directory and mapping rules under the configured `app.data.mapping.path`.
+1. Specify the `app.data.mapping.path` configuration property (there have to be a valid JSON file).
 
-2. An arbitrary service code that _retrieves remote data_ from registered Data Sources may look like this:
+2. Introduce your [data models](#data-models) and Google Spreadsheets named value ranges mapping rules for them.
+Place models anywhere under the `resources` directory and mapping rules in the specified path.
+
+3. An arbitrary service code that _retrieves remote data_ from registered Data Sources may look like this:
 
     ```java
         private static final DomainType<Design> DESIGNS = new StaticType<>("designs", Design.class);
@@ -379,16 +394,9 @@ In case you want to use the `EventReactivePublisher` features, e.g. for streamin
 1. Supply the following configuration as well:
 
     ```java
-    @ComponentScan({
-        "marksto.events.service"
+    @Import({
+        marksto.events.config.EventsConfiguration.class
     })
-    
-    ...
-    
-    @Bean("eventExecutor")
-    public Executor executor() {
-       return Executors.newSingleThreadExecutor();
-    }
     ```
 
 2. An arbitrary _Spring WebFlux_ controller code for _events streaming_ might look like this:
@@ -458,6 +466,8 @@ These could also be passed as environment variables, e.g. `APP_DATA_SOURCES_SHEE
 Advanced properties with their defaults (for fine tuning):
 
 ```properties
+app.data.sources.default-name-prefix= ##unset##
+
 app.data.sources.autoReInitIn=3s
 app.data.sources.reInitRetriesNum=1
 ```
@@ -466,7 +476,7 @@ Please, find the detailed description of these in [DataSourcesProperties](src/ma
 
 #### DataMappingService
 
-The **required** basic configuration:
+The basic configuration (optional until you want to use [data mapping feature](#data-mapping-feature)):
 
 ```properties
 app.data.mapping.path=<e.g. '/data/meta/data-mapping.json'>
@@ -475,6 +485,7 @@ app.data.mapping.path=<e.g. '/data/meta/data-mapping.json'>
 Advanced properties with their defaults (for fine tuning):
 
 ```properties
+app.data.mapping.thread-pool-size=2
 app.data.mapping.expireCacheEvery= ##unset##
 ```
 

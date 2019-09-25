@@ -20,6 +20,7 @@ import static marksto.data.mapping.MappingSchemaBean.MappingSchemaBeanSerializer
  * @author marksto
  */
 @Configuration
+@SuppressWarnings("SpringFacetCodeInspection")
 public class KryoConfiguration {
 
     private static class LazyDynaMapSerializer extends Serializer<LazyDynaMap> {

@@ -9,10 +9,11 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import marksto.common.util.GeneralUtils;
+import marksto.data.config.properties.DataMappingProperties;
 import marksto.web.mapping.JsonResourcesMapper;
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.converters.DoubleConverter;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -41,15 +42,18 @@ import java.util.concurrent.Executors;
         "marksto.data.mapping"
 })
 @Import(marksto.data.config.KryoConfiguration.class)
-
-@SuppressWarnings({"unused", "squid:S1118", "squid:S1172"})
+@EnableConfigurationProperties({
+        DataMappingProperties.class
+})
+@SuppressWarnings({"unused", "squid:S1118", "squid:S1172", "SpringFacetCodeInspection"})
 public class MappingConfiguration {
 
     private static final String MAPPING_THREAD_NAME = "mapper-%d";
 
     @Bean
-    public Scheduler mappingScheduler(@Value("${app.mapping.thread-pool-size}") int threadPoolSize) {
-        return Schedulers.fromExecutor(Executors.newFixedThreadPool(threadPoolSize,
+    public Scheduler mappingScheduler(DataMappingProperties dataMappingProperties) {
+        final var mappingSchedulerThreadPoolSize = dataMappingProperties.getThreadPoolSize();
+        return Schedulers.fromExecutor(Executors.newFixedThreadPool(mappingSchedulerThreadPoolSize,
                 new ThreadFactoryBuilder().setDaemon(true).setNameFormat(MAPPING_THREAD_NAME).build())
         );
     }

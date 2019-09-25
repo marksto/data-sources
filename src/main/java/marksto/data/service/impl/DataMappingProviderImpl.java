@@ -17,7 +17,7 @@ public class DataMappingProviderImpl implements DataMappingProvider {
 
     private static final Logger LOG = LoggerFactory.getLogger(DataMappingProviderImpl.class);
 
-    private static final String JSON_PARSING_ERROR_MSG = "Failed to parse 'data-mapping.json' file";
+    private static final String NO_DATA_MAPPING = "No 'data-mapping.json' file provided, only the default one is used";
 
     // -------------------------------------------------------------------------
 
@@ -56,7 +56,12 @@ public class DataMappingProviderImpl implements DataMappingProvider {
 
         DataMapping dataMapping = loadDataMappingFile(dataMappingPath);
         DataMapping dataSourceMapping = loadDataMappingFile(DEFAULT_DATA_MAPPING_PATH);
-        dataMapping.put(DATA_SOURCES_MAPPING_KEY, dataSourceMapping.get(DATA_SOURCES_MAPPING_KEY));
+
+        if (dataMapping != null) {
+            dataMapping.put(DATA_SOURCES_MAPPING_KEY, dataSourceMapping.get(DATA_SOURCES_MAPPING_KEY));
+        } else {
+            dataMapping = dataSourceMapping;
+        }
 
         return dataMapping;
     }
@@ -64,8 +69,8 @@ public class DataMappingProviderImpl implements DataMappingProvider {
     private DataMapping loadDataMappingFile(String dataMappingPath) {
         return webServerService.getResourceAsText(dataMappingPath)
                 .map(jsonStr -> DataMapping.load().fromJson(jsonStr))
-                .onFailure(t -> LOG.error(JSON_PARSING_ERROR_MSG, t))
-                .getOrElseThrow(ex -> new IllegalStateException(JSON_PARSING_ERROR_MSG, ex));
+                .onFailure(t -> LOG.warn(NO_DATA_MAPPING))
+                .getOrElse((DataMapping) null);
     }
 
     // -------------------------------------------------------------------------

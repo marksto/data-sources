@@ -22,6 +22,11 @@ public class DataSourcesProperties {
     private List<String> sheetsIds = Collections.emptyList();
 
     /**
+     * A default Data Source name prefix used for auto-generated names.
+     */
+    private String defaultNamePrefix;
+
+    /**
      * An automatic Data Source re-initialization attempt timeout.<br/>
      * The default value is {@code 10} second.
      */
@@ -45,6 +50,14 @@ public class DataSourcesProperties {
 
     public void setSheetsIds(List<String> sheetsIds) {
         this.sheetsIds = sheetsIds;
+    }
+
+    public String getDefaultNamePrefix() {
+        return defaultNamePrefix;
+    }
+
+    public void setDefaultNamePrefix(String defaultNamePrefix) {
+        this.defaultNamePrefix = defaultNamePrefix;
     }
 
     public Duration getAutoReInitIn() {
