@@ -7,7 +7,7 @@
 
     <groupId>name.marksto</groupId>
     <artifactId>data-sources</artifactId>
-    <version>0.1.2</version>
+    <version>0.1.3</version>
     <packaging>jar</packaging>
 
     <name>Data Sources</name>
@@ -48,7 +48,7 @@
         <version.reactor-extra>3.2.3.RELEASE</version.reactor-extra>
         <version.vavr>1.0.0-alpha-3</version.vavr>
 
-        <version.common>0.1.0</version.common>
+        <version.common>0.1.1</version.common>
         <in-project.path>${project.basedir}/lib</in-project.path>
     </properties>
 
@@ -305,7 +305,7 @@
                                     <fileset dir="${in-project.path}/name/marksto" includes="common/**"/>
                                 </delete>
                                 <copy todir="${path_to_common_lib}">
-                                    <fileset dir="../common/target" includes="*.jar"/>
+                                    <fileset dir="../common/target" includes="common-${version.common}.jar"/>
                                 </copy>
                                 <copy file="../common/pom.xml"
                                       tofile="${path_to_common_lib}/common-${version.common}.pom"/>
@@ -387,10 +387,10 @@
                             <artifact>*:*</artifact>
                             <excludes>
                                 <exclude>META-INF/*</exclude>
+                                <exclude>i18n/*</exclude>
                             </excludes>
                         </filter>
                     </filters>
-                    <minimizeJar>true</minimizeJar>
                 </configuration>
             </plugin>
         </plugins>
