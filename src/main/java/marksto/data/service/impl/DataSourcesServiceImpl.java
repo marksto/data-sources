@@ -21,7 +21,9 @@ import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
 import java.util.*;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -100,15 +102,30 @@ public class DataSourcesServiceImpl implements DataSourcesService {
 
     // -------------------------------------------------------------------------
 
-    private final CopyOnWriteArrayList<String> dataSourcesKeys = new CopyOnWriteArrayList<>();
+    // TODO: This piece is a good candidate for extraction into a separate concern (an utility class).
+
+    private final ConcurrentSkipListSet<String> dataSourcesKeys = new ConcurrentSkipListSet<>();
 
     private final Cache<String, DataSource> dataSourcesCache = Caffeine.newBuilder().build();
 
+    private final ReadWriteLock dataSourcesCacheLocks = new ReentrantReadWriteLock();
+
+    private final Runnable acquireWriteLock = () -> dataSourcesCacheLocks.writeLock().lock();
+
+    private Mono<DataSource> doWithDataSourcesCacheWriteLock(Mono<DataSource> workflow) {
+        return Mono.fromRunnable(acquireWriteLock)
+                .then(workflow)
+                .doFinally(ignoredS -> dataSourcesCacheLocks.writeLock().unlock());
+    }
+    private Flux<DataSource> doWithDataSourcesCacheWriteLock(Flux<DataSource> workflow) {
+        return Mono.fromRunnable(acquireWriteLock)
+                .thenMany(workflow)
+                .doFinally(ignoredS -> dataSourcesCacheLocks.writeLock().unlock());
+    }
+
     private BiConsumer<String, DataSource> cacheOne = (key, dataSource) -> {
         dataSourcesCache.put(key, dataSource);
-        if (dataSourcesKeys.addIfAbsent(key)) {
-            dataSourcesKeys.sort(Comparator.naturalOrder());
-        }
+        dataSourcesKeys.add(key);
     };
 
     private Consumer<String> invalidateOne = key -> dataSourcesCache.invalidate(key);
@@ -194,26 +211,28 @@ public class DataSourcesServiceImpl implements DataSourcesService {
     }
 
     private Mono<DataSource> registerDataSource(final DataSource dataSource, boolean doInvalidateCache) {
-        return checkArgumentNotNull(dataSource.getName())
-                .onErrorResume(t -> {
-                    var name = provideUniqueName();
-                    dataSource.setName(name);
-                    return Mono.just(name);
-                })
-                .flatMap(key -> {
-                    if (doInvalidateCache) {
-                        invalidateOne.accept(key);
-                        return Mono.just(key);
-                    } else {
-                        return checkNonExistingDataSource(dataSource.getName());
-                    }
-                })
-                .doOnError(t -> statusPublisher.publishStatusFor(dataSource, t.getMessage()))
-                .flatMap(key -> {
-                    LOG.info("Registering new DataSource: name='{}'", key);
-                    cacheOne.accept(key, dataSource);
-                    return Mono.just(dataSource);
-                });
+        return doWithDataSourcesCacheWriteLock(
+                checkArgumentNotNull(dataSource.getName())
+                        .onErrorResume(t -> {
+                            var name = provideUniqueName();
+                            dataSource.setName(name);
+                            return Mono.just(name);
+                        })
+                        .flatMap(key -> {
+                            if (doInvalidateCache) {
+                                invalidateOne.accept(key);
+                                return Mono.just(key);
+                            } else {
+                                return checkNonExistingDataSource(dataSource.getName());
+                            }
+                        })
+                        .doOnError(t -> statusPublisher.publishStatusFor(dataSource, t.getMessage()))
+                        .flatMap(key -> {
+                            LOG.info("Registering new DataSource: name='{}'", key);
+                            cacheOne.accept(key, dataSource);
+                            return Mono.just(dataSource);
+                        })
+        );
     }
 
     private String provideUniqueName() {
