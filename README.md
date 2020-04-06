@@ -1,14 +1,13 @@
 # Data Sources
-Google Spreadsheets as reactive remote Data Sources in Java.
+Google Spreadsheets as synchronizable remote Data Sources for your Java web app.
 
 > **TL;DR**
 > 
 > This library mainly addresses the two missing parts of the Google Sheets API:
 > 1. consistent _data synchronization_ between multiple dependent spreadsheets
-> 2. retrieving data as _business entities_ instead of raw cell data
+> 2. retrieving data as _business entities_ instead of just raw cell data
 > 
-> As a byproduct, the first reactive wrapper around the existing Java API 
-> began to emerge.
+> As a byproduct, the first reactive wrapper around the existing Java API began to emerge.
 
 
 
@@ -24,9 +23,13 @@ time-to-market terms. Sheets tend to be more of a database. The major shortcomin
 your data reaches the boundary of this "small" amount (which is precisely `400,000` cells per sheet for Google Sheets) 
 and then finally exceeds it (thanks to the combinatorial explosion of the denormalized data representation).
 
-The usual means, e.g. the built-in function `IMPORTRANGE`, do not help to solve this problem — dependent tables do not 
-automatically receive notifications about the need for their dependencies data updates. And even if they received such 
-notifications, it is not entirely clear how they would work in case of cascading updates of the dependent tables graph.
+In this case, the right thing to do is to normalize your data — breaking up larger sheets into smaller ones and finally
+ending up with multiple dependent spreadsheets (since things become really slow when each individual cell update causes 
+the half of a spreadsheet's formulas to recalculate) with unsynchronized data that require manual synchronization (that 
+is copy-pasting). The usual means, e.g. the built-in `IMPORTRANGE` function, don't help to solve the problem — dependent 
+tables do not automatically receive notifications about the need to reload data from the updated dependencies. And even
+if they were receiving such notifications, it is not clear how they will operate in case of cascading dependency graph 
+updates.
 
 Here's where the _Data Sources_ come to the rescue! With this ready-to-go Java library one may keep their tabular data 
 and business logic in a familiar Google Spreadsheets format (with built-in formulas and/or custom AppScript functions) 
@@ -34,9 +37,9 @@ while [synchronizing dependencies graph](#the-how) automatically via the minimal
 
 Moreover, you might want to export the data or run [some Java workloads](#usage-examples) with it — here is where the 
 built-in JSON Schema-based data mapping facilities come in very handy. The ability to receive from your spreadsheets 
-not the raw data (meaningless `List<List<...>>` in Java), but full-fledged _business entities_ (with clear semantics 
-and defined structure) takes work with Google Sheets API to a new level of convenience, starting to resemble the ORM 
-for a traditional database.
+not just raw data (meaningless `List<List<...>>` in Java), but full-fledged _business entities_ (with clear semantics 
+and defined structure) is simply magnificent — and it takes work with Google Sheets API to a new level of convenience, 
+starting to resemble the ORM for a traditional database.
 
 
 
@@ -571,7 +574,7 @@ Under the hood Data Sources leverage:
   for responses deserialization via the data mapping rules
 - [Project Reactor](https://projectreactor.io/) as a Reactive Streams API for data flows
 
-Make sure you are familiar with these, especially the [Reactor's documentation](https://projectreactor.io/docs/core/release/reference/index.html).
+Make sure you are familiar with these, especially with the [Reactor's documentation](https://projectreactor.io/docs/core/release/reference/index.html).
 
 **NB:** You might want to install the (paid) _Manifold_ IntelliJ IDEA plugin for better meta-programming experience.
 
@@ -580,6 +583,7 @@ Make sure you are familiar with these, especially the [Reactor's documentation](
 
 - Add new features such as _Dynamic Domain Types_ support for reloading data models in runtime
 - Make Sheets API use an asynchronous non-blocking web client (Spring's `WebClient`)
+- Optimize an existing threading model, parallelizing the job where possible
 - Upload/download data sources and data mapping to/from the Google Drive
 - Describe data mapping rules in more details with examples
 - Create an environment for live demonstration
@@ -589,4 +593,4 @@ Make sure you are familiar with these, especially the [Reactor's documentation](
 
 ## License
 
-Copyright © 2019 Mark Sto. See the [LICENSE](./LICENSE) file for license rights and limitations.
+Copyright © 2019-2020 Mark Sto. See the [LICENSE](./LICENSE) file for license rights and limitations.
